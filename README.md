@@ -31,14 +31,6 @@ In either case, we will __help you with the initial configuration__ of your Vide
 
 We haven't come up with a price list yet, so just [send us an email](videopi@jakubvalenta.cz) and we'll get back to you and find a solution that will suit your needs.
 
----
-
-[^1]: VideoPi uses the excellent [http://www.mpv.io/](mpv media player) with the FFmpeg library, which supports MPEG-2, H.263/MPEG-4 Part 2 (DivX, .avi, .mpeg), H.264/MPEG-4 AVC (.mp4, .mov, .mkv), Windows Media Video (.wmv), VP8 (.webm), Theora (.ogv), any many other codecs.
-
-[^2]: VideoPi can read USB flash drives formatted on Windows (FAT, NTFS), Mac (HFS+), or Linux (ext4 etc).
-
-[^3]: VideoPi is a set of configuration files and scripts on top of [http://www.archlinuxarm.org/](ArchLinux ARM) GNU/Linux distribution. It uses udevil to manage USB flash drive mounting and mpv to play the videos.
-
 ## Technical
 
 ### Installation
@@ -48,3 +40,9 @@ See [INSTALL.md](./INSTALL.md)
 ### Contributing
 
 See [NOTICE](./NOTICE) and [LICENSE](./LICENSE) for license information.
+
+[^1]: VideoPi uses the excellent [http://www.mpv.io/](mpv media player) with the FFmpeg library, which supports MPEG-2, H.263/MPEG-4 Part 2 (DivX, .avi, .mpeg), H.264/MPEG-4 AVC (.mp4, .mov, .mkv), Windows Media Video (.wmv), VP8 (.webm), Theora (.ogv), any many other codecs.
+
+[^2]: VideoPi can read USB flash drives formatted on Windows (FAT, NTFS), Mac (HFS+), or Linux (ext4 etc).
+
+[^3]: VideoPi is a set of configuration files and scripts on top of [http://www.archlinuxarm.org/](ArchLinux ARM) GNU/Linux distribution. It uses udevil to manage USB flash drive mounting and mpv to play the videos.
