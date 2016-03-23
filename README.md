@@ -31,7 +31,7 @@ If you don't feel like installing VideoPi yourself (which you totally can, by th
 
 In either case, we will __help you with the initial setup__.
 
-We haven't come up with a price list or the exact extend of support and maintenance offered yet, so just [send us an email](mailto:jakub@jakubvalenta.cz) and we'll get back to you and find a solution that will suit your needs.
+We haven't come up with a price list or the exact extent of provided support and maintenance yet, so just [send us an email](mailto:17bda853@opayq.com) and we'll get back to you.
 
 ## Help
 
@@ -43,7 +43,7 @@ VideoPi aims for simplicity and zero configuration, therefore:
 - Video files will play in __alphabetic order__. If you want to be sure of particular file order, name your files with numbers or lowercase letters and use only latin characters.
 - __Non-latin characters__ (such as accented latin characters or chinese characters) as well as special characters (such as punctuation) are supported in file names, but should rather be avoided.
 - The __loop__ (repeat all) function cannot be turned of.
-- To setup the __webcam__ you need to have an internet connection and a server with remote SSH access, see the [Webcam section](#Webcam) for more info.
+- To setup the __webcam__ you need to have an internet connection and a server with remote SSH access, see the [Webcam section](#webcam) for more info.
 
 ## Technical
 
@@ -147,7 +147,7 @@ sudo make DEVICE=/dev/sdX CUSTOM="my-home-network" clean build-rpi2
 
 ##### Webcam
 
-To setup a webcam image upload you need a working [Network connection](#Network) and SSH. Copy example SSH config files from `src/` and edit them to match your server configuration:
+To setup a webcam image upload you need a working [Network connection](#network) and SSH. Copy example SSH config files from `src/` and edit them to match your server configuration:
 
 ```
 mkdir -p src-custom/my-server/home/alarm/.ssh/
@@ -175,12 +175,25 @@ sudo make DEVICE=/dev/sdX CUSTOM="my-home-network my-server" clean build-rpi2
 
 The log is located in `/home/alarm/.log/devmon.log`.
 
-### Contributing
+### License
 
-See [NOTICE](./NOTICE) and [LICENSE](./LICENSE) for license information.
+Copyright 2016 Jakub Valenta
 
-[^1]: VideoPi uses the excellent [http://www.mpv.io/](mpv media player) with the FFmpeg library, which supports MPEG-2, H.263/MPEG-4 Part 2 (DivX, .avi, .mpeg), H.264/MPEG-4 AVC (.mp4, .mov, .mkv), Windows Media Video (.wmv), VP8 (.webm), Theora (.ogv), any many other codecs.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+[^1]: VideoPi uses the excellent [mpv media player](http://www.mpv.io/) with the FFmpeg library, which supports MPEG-2, H.263/MPEG-4 Part 2 (DivX, .avi, .mpeg), H.264/MPEG-4 AVC (.mp4, .mov, .mkv), Windows Media Video (.wmv), VP8 (.webm), Theora (.ogv), any many other codecs.
 
 [^2]: VideoPi can read USB flash drives formatted on Windows (FAT, NTFS), Mac (HFS+), or Linux (ext4 etc).
 
-[^3]: VideoPi is a set of configuration files and scripts on top of [http://www.archlinuxarm.org/](ArchLinux ARM) GNU/Linux distribution. It uses udevil to manage USB flash drive mounting and mpv to play the videos.
+[^3]: VideoPi is a set of configuration files and scripts on top of (ArchLinux ARM)[http://www.archlinuxarm.org] GNU/Linux distribution. It uses udevil to manage USB flash drive mounting and mpv to play the videos.
