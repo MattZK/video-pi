@@ -1,0 +1,8 @@
+/backup
+/cache
+/dist/*
+/tmp
+/src*/var/cache/pacman/pkg/*.pkg.tar.xz
+/src-custom/*
+!/src-custom/example
+!/src-custom/shuffle

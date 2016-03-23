@@ -1,0 +1,7 @@
+#!/bin/sh
+
+HOST="my-server"
+REMOTE="/home/my-user/public_html"
+
+scp -Cp $1 "$HOST:$REMOTE/archive/$(basename $1)"
+ssh -nf $HOST "ln -s -f $REMOTE/archive/$(basename $1) $REMOTE/current.jpg"

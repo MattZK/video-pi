@@ -1,0 +1,39 @@
+#include ".Xresources.d/solarized-dark"
+
+Xft.antialias:  1
+Xft.autohint:   0
+Xft.dpi:        96
+Xft.hinting:    1
+Xft.hintstyle:  hintfull
+Xft.lcdfilter:  lcddefault
+Xft.rgba:       rgb
+
+Xcursor.theme:  Neutral
+Xcursor.size:   16  ! 32, 48 or 64 may also be good values
+
+*geometry:                80x40
+*jumpScroll:              true
+*saveLines:               10000
+*cursorBlink:             true
+*fading:                  10
+
+XTerm*boldMode:           false
+XTerm*cutNewline:         false
+XTerm*dynamicColors:      false
+XTerm*faceName:           Terminus
+XTerm*faceSize:           16
+XTerm*multiScroll:        true
+XTerm*scrollKey:          true
+XTerm*utf8:               1
+XTerm*bellIsUrgent:       true
+
+URxvt*font:               xft:Terminus:size=16
+URxvt*scrollBar:          false
+URxvt*scrollTtyOutput:    false
+URxvt*scrollWithBuffer:   true
+URxvt*scrollTtyKeypress:  true
+URxvt*urgentOnBell:       true
+URxvt*cursorUnderline:    true
+
+URxvt*transparent:        true
+URxvt*shade:              100

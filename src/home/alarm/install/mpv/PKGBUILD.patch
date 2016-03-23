@@ -1,0 +1,24 @@
+--- PKGBUILD.orig	2016-03-20 13:09:33.000000000 +0100
++++ PKGBUILD	2016-03-20 13:12:44.395523523 +0100
+@@ -11,7 +11,7 @@
+ pkgver=0.16.0
+ pkgrel=1
+ pkgdesc='Video player based on MPlayer/mplayer2'
+-arch=('i686' 'x86_64')
++arch=('i686' 'x86_64' 'armv6h' 'armv7h')
+ license=('GPL')
+ url='http://mpv.io'
+ depends=(
+@@ -43,7 +43,11 @@
+     --enable-zsh-comp \
+     --enable-libmpv-shared \
+     --enable-cdda \
+-    --enable-egl-x11
++    --enable-egl-x11 \
++    --enable-xv \
++    --enable-gl \
++    --enable-gl-x11 \
++    --enable-rpi
+ 
+   ./waf build
+ }

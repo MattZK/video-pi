@@ -1,0 +1,11 @@
+#!/bin/sh
+
+[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
+xset b off
+xset s off
+xset -dpms
+xsetroot -cursor_name left_ptr
+feh --bg-fill /opt/video_pi/video_pi_desktop.png
+# xcompmgr -c &
+
+my-autostart-xorg

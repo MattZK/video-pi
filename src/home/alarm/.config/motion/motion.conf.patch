@@ -1,0 +1,61 @@
+--- motion.conf.orig	2016-01-11 14:13:17.000000000 +0100
++++ motion.conf	2016-02-27 23:35:29.000000000 +0100
+@@ -244,7 +244,7 @@
+ ############################################################
+ 
+ # Use ffmpeg to encode mpeg movies in realtime (default: off)
+-ffmpeg_cap_new on
++ffmpeg_cap_new off
+ 
+ # Use ffmpeg to make movies with only the pixels moving
+ # object (ghost images) (default: off)
+@@ -292,7 +292,7 @@
+ ############################################################
+ 
+ # Make automated snapshot every N seconds (default: 0 = disabled)
+-snapshot_interval 0
++snapshot_interval 600
+ 
+ 
+ ############################################################
+@@ -356,7 +356,7 @@
+ 
+ # Target base directory for pictures and films
+ # Recommended to use absolute path. (Default: current working directory)
+-target_dir /usr/local/apache2/htdocs/cam1
++target_dir webcam
+ 
+ # File path for snapshots (jpeg or ppm) relative to target_dir
+ # Default: %v-%Y%m%d%H%M%S-snapshot
+@@ -397,7 +397,7 @@
+ ############################################################
+ 
+ # The mini-http server listens to this port for requests (default: 0 = disabled)
+-webcam_port 8081
++webcam_port 0
+ 
+ # Quality of the jpeg (in percent) images produced (default: 50) 
+ webcam_quality 50
+@@ -423,7 +423,7 @@
+ ############################################################
+ 
+ # TCP/IP port for the http server to listen on (default: 0 = disabled)
+-control_port 8080
++control_port 0
+ 
+ # Restrict control connections to localhost only (default: on)
+ control_localhost on
+@@ -518,7 +518,7 @@
+ 
+ # Command to be executed when a picture (.ppm|.jpg) is saved (default: none)
+ # To give the filename as an argument to a command append it with %f
+-; on_picture_save value
++on_picture_save upload-image %f
+ 
+ # Command to be executed when a motion frame is detected (default: none)
+ ; on_motion_detected value
+@@ -634,4 +634,3 @@
+ ; thread /usr/local/etc/thread2.conf
+ ; thread /usr/local/etc/thread3.conf
+ ; thread /usr/local/etc/thread4.conf
+-
