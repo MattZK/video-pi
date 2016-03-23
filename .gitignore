@@ -1,6 +1,6 @@
 /backup
 /cache
-/dist/*
+/dist
 /tmp
 /src*/var/cache/pacman/pkg/*.pkg.tar.xz
 /src-custom/*
