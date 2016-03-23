@@ -1,4 +1,4 @@
-# Video Pi
+# VideoPi
 
 *video player for artists by artists*
 
@@ -9,24 +9,24 @@ We are Jakub and Viktor, graduates from the Academy of Fine Arts in Prague, and 
 3. to __see glitches and lags__ in your video and do the transcoding several times again until the playback is smooth,
 4. to visit the exhibition and see that __your videos are not playing__ because someone forgot to press the play button or didn't turn the loop function on.
 
-Video Pi fixes all these problems:
+VideoPi fixes all these problems:
 
 1. it plays virtually __any video format__ you can think of[^1],
 2. from a __USB stick__[^2],
 3. with __no glitches or lags__ (full HD supported),
 4. and it __starts playing all videos__ on the USB stick __in a loop automatically__ right after you plug it in the electricity.
 
-Video Pi requires no configuration for the most common use case -- HDMI full HD video output with a separate 3.5mm jack audio output.
+VideoPi requires no configuration for the most common use case -- HDMI full HD video output with a separate 3.5mm jack audio output.
 
-Video Pi can also capture images using a __webcam__ and upload them to your server.
+VideoPi can also capture images using a __webcam__ and upload them to your server.
 
-Video Pi is extendable and open for modifications. You can modify Video Pi to do video post-processing like gamma adjustment, or to play the clips in random order, or to do something we couldn't even imagine. Video Pi has all the capabilities of a micro PC; in the end it's nothing but a clever Linux installation[^3]. Dig in Video Pi's [open-source code](http://lab.saloun.cz/jakub/video-pi).
+VideoPi is extendable and open for modifications. You can modify VideoPi to do video post-processing like gamma adjustment, or to play the clips in random order, or to do something we couldn't even imagine. VideoPi has all the capabilities of a micro PC; in the end it's nothing but a clever Linux installation[^3]. Dig in VideoPi's [open-source code](http://lab.saloun.cz/jakub/video-pi).
 
-## Get Video Pi
+## Get VideoPi
 
-If you don't feel like installing Video Pi yourself (which you totally can, by the way, if you know the basics of Linux), we can
+If you don't feel like installing VideoPi yourself (which you totally can, by the way, if you know the basics of Linux), we can
 
-- __lend you a Video Pi__ (or two, or a dozen) for a daily price for as long as you need,
+- __lend you a VideoPi__ (or two, or a dozen) for a daily price for as long as you need,
 - or we can __sell it to you__, so it will be yours and yours only forever.
 
 In either case, we will __help you with the initial setup__.
@@ -35,9 +35,9 @@ We haven't come up with a price list or the exact extend of support and maintena
 
 ## Help
 
-Video Pi aims for simplicity and zero configuration, therefore:
+VideoPi aims for simplicity and zero configuration, therefore:
 
-- Make sure the __HDMI cable__ is connected before you power on Video Pi.
+- Make sure the __HDMI cable__ is connected before you power on VideoPi.
 - By default, the __sound__ will play from the 3.5mm jack, not from the HDMI.
 - __Volume__ adjustment is not available. Adjust the volume on your speakers.
 - Video files will play in __alphabetic order__. If you want to be sure of particular file order, name your files with numbers or lowercase letters and use only latin characters.
@@ -47,7 +47,7 @@ Video Pi aims for simplicity and zero configuration, therefore:
 
 ## Technical
 
-### Install pre-built Video Pi image
+### Install pre-built VideoPi image
 
 Required packages:
 
@@ -78,7 +78,7 @@ sudo make DEVICE=/dev/sdX install_rpi1
 sudo make DEVICE=/dev/sdX install_rpi2
 ```
 
-### Build Video Pi image
+### Build VideoPi image
 
 Currently the build scripts work on Arch Linux only, because they use Arch-modified chroot.
 
@@ -179,8 +179,8 @@ The log is located in `/home/alarm/.log/devmon.log`.
 
 See [NOTICE](./NOTICE) and [LICENSE](./LICENSE) for license information.
 
-[^1]: Video Pi uses the excellent [http://www.mpv.io/](mpv media player) with the FFmpeg library, which supports MPEG-2, H.263/MPEG-4 Part 2 (DivX, .avi, .mpeg), H.264/MPEG-4 AVC (.mp4, .mov, .mkv), Windows Media Video (.wmv), VP8 (.webm), Theora (.ogv), any many other codecs.
+[^1]: VideoPi uses the excellent [http://www.mpv.io/](mpv media player) with the FFmpeg library, which supports MPEG-2, H.263/MPEG-4 Part 2 (DivX, .avi, .mpeg), H.264/MPEG-4 AVC (.mp4, .mov, .mkv), Windows Media Video (.wmv), VP8 (.webm), Theora (.ogv), any many other codecs.
 
-[^2]: Video Pi can read USB flash drives formatted on Windows (FAT, NTFS), Mac (HFS+), or Linux (ext4 etc).
+[^2]: VideoPi can read USB flash drives formatted on Windows (FAT, NTFS), Mac (HFS+), or Linux (ext4 etc).
 
-[^3]: Video Pi is a set of configuration files and scripts on top of [http://www.archlinuxarm.org/](ArchLinux ARM) GNU/Linux distribution. It uses udevil to manage USB flash drive mounting and mpv to play the videos.
+[^3]: VideoPi is a set of configuration files and scripts on top of [http://www.archlinuxarm.org/](ArchLinux ARM) GNU/Linux distribution. It uses udevil to manage USB flash drive mounting and mpv to play the videos.
