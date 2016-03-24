@@ -14,7 +14,7 @@ VideoPi fixes all these problems:
 1. it plays virtually __any video format__ you can think of[^1],
 2. from a __USB stick__[^2],
 3. with __no glitches or lags__ (full HD supported),
-4. and it __starts playing all videos__ on the USB stick __in a loop automatically__ right after you plug it in the electricity.
+4. and it __starts playing all videos__ on the USB stick __in a loop automatically__; you just connect the power.
 
 VideoPi requires no configuration for the most common use case -- HDMI full HD video output with a separate 3.5mm jack audio output.
 
@@ -35,21 +35,23 @@ We haven't come up with a price list or the exact extent of provided support and
 
 ## Help
 
-VideoPi aims for simplicity and zero configuration, therefore:
+VideoPi aims for simplicity and zero configuration, therefore and but:
 
 - Make sure the __HDMI cable__ is connected before you power on VideoPi.
-- By default, the __sound__ will play from the 3.5mm jack, not from the HDMI.
+- By default, the __sound__ will play from the 3.5mm jack not from the HDMI.
 - __Volume__ adjustment is not available. Adjust the volume on your speakers.
 - Video files will play in __alphabetic order__. If you want to be sure of particular file order, name your files with numbers or lowercase letters and use only latin characters.
-- __Non-latin characters__ (such as accented latin characters or chinese characters) as well as special characters (such as punctuation) are supported in file names, but should rather be avoided.
-- The __loop__ (repeat all) function cannot be turned of.
+- File names with __non-latin characters__ (such as chinese or cyrillic) as well as special characters (such as punctuation) are supported but should be avoided; especially if you care about the playback order.
+- The __loop__ (repeat all) function cannot be turned off.
 - To setup the __webcam__ you need to have an internet connection and a server with remote SSH access, see the [Webcam section](#webcam) for more info.
 
 ## Technical
 
 ### Install pre-built VideoPi image
 
-Required packages:
+__WARNING:__ Following documentation uses `/dev/sdX` as a substitute for your real device path. Double check the device path before executing the installer (Makefile), so that you don't loose any data.
+
+Required Arch Linux packages (should be similar on other distributions):
 
 ```
 util-linux (sfdisk)
@@ -59,30 +61,30 @@ make
 wget
 ```
 
-Format SD card and install image for Raspberry Pi 1:
+Format an SD card and install the image for a Raspberry Pi 1 on it:
 
 ```
 sudo make DEVICE=/dev/sdX filesystems install-rpi1
 ```
 
-Format SD card and Install image for Raspberry Pi 2:
+Format an SD card and install the image for a Raspberry Pi 2 on it:
 
 ```
 sudo make DEVICE=/dev/sdX filesystems install-rpi2
 ```
 
-Install image without formating SD card:
+Install the image on an SD card without formatting it:
 
 ```
-sudo make DEVICE=/dev/sdX install_rpi1
-sudo make DEVICE=/dev/sdX install_rpi2
+sudo make DEVICE=/dev/sdX install-rpi1
+sudo make DEVICE=/dev/sdX install-rpi2
 ```
 
 ### Build VideoPi image
 
 Currently the build scripts work on Arch Linux only, because they use Arch-modified chroot.
 
-Required packages:
+Required Arch Linux packages:
 
 ```
 util-linux (sfdisk)
@@ -95,13 +97,13 @@ binfmt-support
 qemu-user-static
 ```
 
-Build image for Raspberry Pi 1:
+Build the image for a Raspberry Pi 1:
 
 ```
 sudo make DEVICE=/dev/sdX clean build-rpi1
 ```
 
-Build image for Raspberry Pi 2:
+Build the image for a Raspberry Pi 2:
 
 ```
 sudo make DEVICE=/dev/sdX clean build-rpi2
@@ -109,7 +111,7 @@ sudo make DEVICE=/dev/sdX clean build-rpi2
 
 #### Customize
 
-To customize the image (add or replace some files on the SD card), select one of the available modifications from `src-custom/` or create you own and pass appropriate `CUSTOM=` parameter to `make`. Example:
+To customize the image (add or replace some files on the SD card), select one of the available modifications from `src-custom/` or create your own and pass appropriate `CUSTOM=` parameter to `make`. Example:
 
 ```
 mkdir -p src-custom/my-improvement/home/alarm
@@ -147,12 +149,12 @@ sudo make DEVICE=/dev/sdX CUSTOM="my-home-network" clean build-rpi2
 
 ##### Webcam
 
-To setup a webcam image upload you need a working [Network connection](#network) and SSH. Copy example SSH config files from `src/` and edit them to match your server configuration:
+To setup a webcam image upload you need a working [Network connection](#network) and SSH. Copy example SSH config files from `src/` and edit them to match your server settings:
 
 ```
-mkdir -p src-custom/my-server/home/alarm/.ssh/
+mkdir -p src-custom/my-server/home/alarm/.ssh
 cp src/home/alarm/.ssh/config src-custom/my-server/home/alarm/.ssh/
-cd src-custom/my-server/home/alarm/.ssh/
+cd src-custom/my-server/home/alarm/.ssh
 nano known_hosts
 echo "" > id_rsa
 nano config
@@ -165,7 +167,7 @@ cp src/home/alarm/bin/upload-image src-custom/my-server/home/alarm/bin/upload-im
 nano src-custom/my-server/home/alarm/bin/upload-image
 ```
 
-And build the image:
+...and build the image:
 
 ```
 sudo make DEVICE=/dev/sdX CUSTOM="my-home-network my-server" clean build-rpi2
@@ -192,8 +194,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-[^1]: VideoPi uses the excellent [mpv media player](http://www.mpv.io/) with the FFmpeg library, which supports MPEG-2, H.263/MPEG-4 Part 2 (DivX, .avi, .mpeg), H.264/MPEG-4 AVC (.mp4, .mov, .mkv), Windows Media Video (.wmv), VP8 (.webm), Theora (.ogv), any many other codecs.
+[^1]: VideoPi uses the excellent [mpv media player](http://www.mpv.io/) with the FFmpeg library, which supports MPEG-2, H.263/MPEG-4 Part 2 (DivX, .avi, .mpeg), H.264/MPEG-4 AVC (.mp4, .mov, .mkv), Windows Media Video (.wmv), VP8 (.webm), Theora (.ogv), and many other codecs.
 
-[^2]: VideoPi can read USB flash drives formatted on Windows (FAT, NTFS), Mac (HFS+), or Linux (ext4 etc).
+[^2]: VideoPi reads USB flash drives formatted on Windows (FAT, NTFS), Mac (HFS+), or Linux (ext4 etc).
 
-[^3]: VideoPi is a set of configuration files and scripts on top of (ArchLinux ARM)[http://www.archlinuxarm.org] GNU/Linux distribution. It uses udevil to manage USB flash drive mounting and mpv to play the videos.
+[^3]: VideoPi is a set of configuration files and scripts on top of [ArchLinux ARM](http://www.archlinuxarm.org) GNU/Linux distribution. It uses udevil to manage USB flash drive mounting and mpv to play the videos.
