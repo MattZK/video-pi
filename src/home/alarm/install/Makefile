@@ -39,8 +39,8 @@ udevil-git/udevil-git-%.pkg.tar.xz:
 	pacman -S --noconfirm --needed git intltool --asdeps
 	su - alarm sh -c "cd /home/alarm/install/udevil-git; makepkg"
 
-install_mpv: mpv/mpv-1\:0.15.0-1-$(arch).pkg.tar.xz
-	pacman -U --noconfirm --needed "mpv/mpv-1:0.15.0-1-$(arch).pkg.tar.xz"
+install_mpv: mpv/mpv-1\:0.16.0-2-$(arch).pkg.tar.xz
+	pacman -U --noconfirm --needed "mpv/mpv-1:0.16.0-2-$(arch).pkg.tar.xz"
 
 mpv/mpv-%.pkg.tar.xz:
 	[[ -f /usr/bin/fakeroot ]] || pacman -S base-devel ccache
