@@ -46,3 +46,11 @@ mpv/mpv-%.pkg.tar.xz:
 	[[ -f /usr/bin/fakeroot ]] || pacman -S base-devel ccache
 	pacman -S --noconfirm --needed ffmpeg lcms2 libcdio-paranoia enca libxss libxkbcommon libcaca desktop-file-utils hicolor-icon-theme xdg-utils lua52 libdvdnav libguess jack smbclient rubberband python-docutils ladspa hardening-wrapper --asdeps
 	su - alarm sh -c "cd /home/alarm/install/mpv; makepkg"
+
+install_antimicro: antimicro/antimicro-2.21-1-$(arch).pkg.tar.xz
+	pacman -U --noconfirm --needed "antimicro/antimicro-2.21-1-$(arch).pkg.tar.xz"
+
+antimicro/antimicro-%.pkg.tar.xz:
+	[[ -f /usr/bin/fakeroot ]] || pacman -S --noconfirm --needed base-devel ccache
+	pacman -S --noconfirm --needed libxkbcommon-x11 qt5-base itstool qt5-tools sdl2 cmake --asdeps
+	su - alarm sh -c "cd /home/alarm/install/antimicro; makepkg"
