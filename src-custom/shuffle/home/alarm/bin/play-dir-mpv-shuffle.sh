@@ -1,1 +1,0 @@
-play-dir-mpv.sh
