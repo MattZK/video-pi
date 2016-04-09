@@ -5,4 +5,6 @@
 /src*/var/cache/pacman/pkg/*.pkg.tar.xz
 /src-custom/*
 !/src-custom/example
+!/src-custom/gamepad
 !/src-custom/shuffle
+!/src-custom/webcam
