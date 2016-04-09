@@ -8,4 +8,4 @@ xsetroot -cursor_name left_ptr
 feh --bg-fill /opt/video_pi/video_pi_desktop.png
 # xcompmgr -c &
 
-my-autostart-xorg
+for f in $HOME/bin/autostart-xorg.d/*; do sh "$f"; done

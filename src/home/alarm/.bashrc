@@ -9,7 +9,7 @@
 PATH=$HOME/bin:$PATH
 
 # Autostart
-my-autostart-console
+for f in $HOME/bin/autostart-console.d/*; do sh "$f"; done
 
 # Aliases
 # https://wiki.archlinux.org/index.php/Bash#Aliases
