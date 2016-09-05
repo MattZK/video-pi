@@ -127,5 +127,7 @@ clean: umount
 
 checkargs:
 ifeq (,$(DEVICE))
-	exit 1
+	@echo "You must set the DEVICE variable."
+	@echo "Example: make backup DEVICE=/dev/sdX"
+	@exit 1
 endif
