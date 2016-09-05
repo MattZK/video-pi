@@ -1,14 +1,45 @@
 .DELETE_ON_ERROR:
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: partition filesystems mount download unpack_arch unpack_videopi unpack_rpi unpack_my unpack_zku chroot build install install_rpi1 install_rpi2 backup unmount umount clean checkargs
+.PHONY: partition filesystems mount download unpack-arch unpack-videopi unpack-rpi unpack-my unpack-zku chroot build install build-rpi1 build-rpi2 install-rpi1 install-rpi2 backup unmount umount clean checkargs help
 
-all: build_rpi2
+all: build-rpi2
+
+build-rpi1:  ## Build VideoPi image for RaspberryPi 1.
+	export version=1 && \
+	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
+	$(MAKE) build
+	$(MAKE) umount
+
+build-rpi2:  ## Build VideoPi image for RaspberryPi 2.
+	export version=2 && \
+	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
+	$(MAKE) build
+	$(MAKE) umount
+
+install-rpi1:  ## Install VideoPi image for RaspberryPi 1 to DEVICE.
+	export version=1 && \
+	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
+	$(MAKE) install
+	$(MAKE) umount
+
+install-rpi2:  ## Install VideoPi image for RaspberryPi 1 to DEVICE.
+	export version=2 && \
+	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
+	$(MAKE) install
+	$(MAKE) umount
+
+backup: checkargs  ## Create an image of the whole DEVICE and store it to backup/.
+	sh -c "dd if=$(DEVICE) bs=1024 conv=noerror,sync | pv | gzip -c -9 > backup/video-pi-backup-`date +%Y%m%d-%H%M%S`.img.gz"
+
+erase: checkargs  ## Overwrite the whole DEVICE with zeros.
+	 # pv --timer --rate --stop-at-size -s "$$(blockdev --getsize64 $(DEVICE))" /dev/zero > $(DEVICE)
+	dd if=/dev/zero of="$(DEVICE)" iflag=nocache oflag=direct bs=4096
 
 partition: checkargs
 	sh -c "sfdisk $(DEVICE) < disk.dump"
 
-filesystems: checkargs partition
+filesystems: checkargs partition  ## Create partitions and filesystems on the DEVICE.
 	mkfs.vfat "$(DEVICE)1"
 	mkfs.ext4 "$(DEVICE)2"
 
@@ -27,7 +58,7 @@ download: cache/$(filename_archlinux_arm)
 cache/*:
 	cd cache; wget -c "http://archlinuxarm.org/os/$@"
 
-unpack_arch: tmp/root/bin/bash
+unpack-arch: tmp/root/bin/bash
 
 tmp/root/bin/bash: tmp/boot tmp/root cache/$(filename_archlinux_arm)
 	su -c "bsdtar -xpf cache/$(filename_archlinux_arm) -C tmp/root"
@@ -35,18 +66,18 @@ tmp/root/bin/bash: tmp/boot tmp/root cache/$(filename_archlinux_arm)
 	-rm -r tmp/boot/*
 	mv tmp/root/boot/* tmp/boot
 
-unpack_videopi: tmp/root/home/alarm/bin/devmon-play-omxplayer.sh
+unpack-videopi: tmp/root/home/alarm/bin/devmon-play-omxplayer.sh
 
 tmp/root/home/alarm/bin/devmon-play-omxplayer.sh: tmp/root/bin/bash
 	cp -af src/* tmp/root
 	mv tmp/root/boot/* tmp/boot
 
-unpack_rpi: tmp/root/home/alarm/bin/my-autostart-xorg
+unpack-rpi: tmp/root/home/alarm/bin/my-autostart-xorg
 
 tmp/root/home/alarm/bin/my-autostart-xorg: tmp/root/home/alarm/bin/devmon-play-omxplayer.sh
 	[[ -f tmp/root/home/alarm/bin/my-autostart-xorg ]] || cp -af src-rpi$(version)/* tmp/root # check using bash because makefile doesn't recognize symbolic links
 
-unpack_custom: tmp/root/home/alarm/bin/my-autostart-xorg
+unpack-custom: tmp/root/home/alarm/bin/my-autostart-xorg
 ifneq (,$(CUSTOM))
 	for dir in $(CUSTOM); do cp -af src-custom/$$dir/* tmp/root; done
 	-mv tmp/root/boot/* tmp/boot
@@ -54,7 +85,7 @@ endif
 
 chroot: tmp/root/usr/bin/devmon
 
-tmp/root/usr/bin/devmon: checkargs tmp/root/home/alarm/bin/my-autostart-xorg unpack_custom
+tmp/root/usr/bin/devmon: checkargs tmp/root/home/alarm/bin/my-autostart-xorg unpack-custom
 	-[[ -f tmp/root/usr/bin/qemu-arm-static ]] || \
 	update-binfmts --importdir /var/lib/binfmts/ --import; \
 	update-binfmts --display qemu-arm; \
@@ -87,9 +118,6 @@ install: tmp/boot tmp/root dist/video-pi-rpi$(version).tar.bz2
 	-rm -r tmp/boot/*
 	mv tmp/root/boot/* tmp/boot
 
-backup: checkargs
-	sh -c "dd if=$(DEVICE) bs=1024 conv=noerror,sync | pv | gzip -c -9 > backup/video-pi-backup-`date +%Y%m%d-%H%M%S`.img.gz"
-
 unmount: umount
 
 umount:
@@ -98,31 +126,7 @@ umount:
 	-umount tmp/boot
 	-rm -r tmp/boot
 
-build_rpi1:
-	export version=1 && \
-	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
-	$(MAKE) build
-	$(MAKE) umount
-
-build_rpi2:
-	export version=2 && \
-	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
-	$(MAKE) build
-	$(MAKE) umount
-
-install_rpi1:
-	export version=1 && \
-	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
-	$(MAKE) install
-	$(MAKE) umount
-
-install_rpi2:
-	export version=2 && \
-	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
-	$(MAKE) install
-	$(MAKE) umount
-
-clean: umount
+clean: umount  ## Unmount DEVICE partitions and remove temp files created during the build.
 	-rm dist/*
 
 checkargs:
@@ -131,3 +135,6 @@ ifeq (,$(DEVICE))
 	@echo "Example: make backup DEVICE=/dev/sdX"
 	@exit 1
 endif
+
+help: # https://gist.github.com/jhermsmeier/2d831eb8ad2fb0803091
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-14s\033[0m %s\n", $$1, $$2}'
