@@ -92,9 +92,9 @@ dosfstools (mkfs.vfat)
 e2fsprogs (mkfs.ext4)
 make
 wget
-arch-install-scripts
-binfmt-support
-qemu-user-static
+arch-install-scripts (arch-chroot)
+binfmt-support (update-binftms)
+qemu-user-static (qemu-arm-static)
 ```
 
 Build the image for a Raspberry Pi 1:
