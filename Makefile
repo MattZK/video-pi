@@ -29,64 +29,64 @@ install-rpi2:  ## Install VideoPi image for RaspberryPi 1 to DEVICE.
 	$(MAKE) install
 	$(MAKE) umount
 
-backup: | checkargs  ## Create an image of the whole DEVICE and store it to backup/.
+backup: checkargs  ## Create an image of the whole DEVICE and store it to backup/.
 	sh -c "dd if=$(DEVICE) bs=1024 conv=noerror,sync | pv | gzip -c -9 > backup/video-pi-backup-`date +%Y%m%d-%H%M%S`.img.gz"
 
-erase: | checkargs  ## Overwrite the whole DEVICE with zeros.
+erase: checkargs  ## Overwrite the whole DEVICE with zeros.
 	 # pv --timer --rate --stop-at-size -s "$$(blockdev --getsize64 $(DEVICE))" /dev/zero > $(DEVICE)
 	dd if=/dev/zero of="$(DEVICE)" iflag=nocache oflag=direct bs=4096
 
-partition: | checkargs
+partition: checkargs
 	sh -c "sfdisk $(DEVICE) < disk.dump"
 
-filesystems: | checkargs partition  ## Create partitions and filesystems on the DEVICE.
+filesystems: checkargs partition  ## Create partitions and filesystems on the DEVICE.
 	mkfs.vfat "$(DEVICE)1"
 	mkfs.ext4 "$(DEVICE)2"
 
-mount: | tmp/root tmp/boot
+mount: tmp/root tmp/boot
 
-tmp/boot: | checkargs
+tmp/boot: checkargs
 	mkdir -p tmp/boot
 	mount "$(DEVICE)1" tmp/boot
 
-tmp/root: | checkargs
+tmp/root: checkargs
 	mkdir -p tmp/root
 	mount "$(DEVICE)2" tmp/root
 
-download: | cache/$(filename_archlinux_arm)
+download: cache/$(filename_archlinux_arm)
 
 cache/%:
 	mkdir -p cache
 	cd cache; wget -c "http://archlinuxarm.org/os/$$(echo '$@' | sed -r 's/^cache\/(.+)$$/\1/')"
 
-unpack-arch: | tmp/root/bin/bash
+unpack-arch: tmp/root/bin/bash
 
-tmp/root/bin/bash: | mount download
+tmp/root/bin/bash: mount download
 	su -c "bsdtar -xpf cache/$(filename_archlinux_arm) -C tmp/root"
 	sync
 	-rm -r tmp/boot/*
 	mv tmp/root/boot/* tmp/boot
 
-unpack-videopi: | tmp/root/home/alarm/bin/devmon-play-omxplayer.sh
+unpack-videopi: tmp/root/home/alarm/bin/devmon-play-omxplayer.sh
 
-tmp/root/home/alarm/bin/devmon-play-omxplayer.sh: | unpack-arch
+tmp/root/home/alarm/bin/devmon-play-omxplayer.sh: unpack-arch
 	cp -af src/* tmp/root
 	mv tmp/root/boot/* tmp/boot
 
-unpack-rpi: | tmp/root/home/alarm/bin/my-autostart-xorg
+unpack-rpi: tmp/root/home/alarm/bin/my-autostart-xorg
 
-tmp/root/home/alarm/bin/my-autostart-xorg: | unpack-videopi
+tmp/root/home/alarm/bin/my-autostart-xorg: unpack-videopi
 	[[ -f tmp/root/home/alarm/bin/my-autostart-xorg ]] || cp -af src-rpi$(version)/* tmp/root # check using bash because makefile doesn't recognize symbolic links
 
-unpack-custom: | unpack-rpi
+unpack-custom: unpack-rpi
 ifneq (,$(CUSTOM))
 	for dir in $(CUSTOM); do cp -af src-custom/$$dir/* tmp/root; done
 	-mv tmp/root/boot/* tmp/boot
 endif
 
-chroot: | tmp/root/usr/bin/devmon
+chroot: tmp/root/usr/bin/devmon
 
-tmp/root/usr/bin/devmon: | checkargs unpack-rpi unpack-custom
+tmp/root/usr/bin/devmon: checkargs unpack-rpi unpack-custom
 	-[[ -f tmp/root/usr/bin/qemu-arm-static ]] || \
 	update-binfmts --importdir /var/lib/binfmts/ --import; \
 	update-binfmts --display qemu-arm; \
@@ -100,9 +100,9 @@ tmp/root/usr/bin/devmon: | checkargs unpack-rpi unpack-custom
 	umount tmp/root/boot
 	[[ -f tmp/root/usr/bin/devmon ]] && touch tmp/root/usr/bin/devmon # check if chroot install succeeded
 
-build: | dist/video-pi-rpi$(version).tar.bz2
+build: dist/video-pi-rpi$(version).tar.bz2
 
-dist/video-pi-rpi%.tar.bz2: | checkargs chroot
+dist/video-pi-rpi%.tar.bz2: checkargs chroot
 	-rm tmp/root/home/alarm/.bash_history
 	-rm -r tmp/root/home/alarm/install
 	-rm tmp/root/home/alarm/webcam/*
@@ -114,13 +114,13 @@ dist/video-pi-rpi%.tar.bz2: | checkargs chroot
 	cd tmp/root; su -c "bsdtar -cjf ../../$@ *"
 	umount tmp/root/boot
 
-install: | build
+install: mount
 	su -c "bsdtar -xpf dist/video-pi-rpi$(version).tar.bz2 -C tmp/root"
 	sync
 	-rm -r tmp/boot/*
 	mv tmp/root/boot/* tmp/boot
 
-unmount: | umount
+unmount: umount
 
 umount:
 	-umount -R tmp/root
@@ -128,11 +128,11 @@ umount:
 	-umount tmp/boot
 	-rm -r tmp/boot
 
-fsck: | checkargs
+fsck: checkargs
 	fsck.vfat -a "$(DEVICE)1"
 	fsck.ext4 -a "$(DEVICE)2"
 
-clean: | umount  ## Unmount DEVICE partitions and remove temp files created during the build.
+clean: umount  ## Unmount DEVICE partitions and remove temp files created during the build.
 	-rm dist/*
 
 checkargs:
