@@ -1,7 +1,7 @@
 .DELETE_ON_ERROR:
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: build-rpi1 build-rpi2 install-rpi1 install-rpi2 unpack-rpi1 unpack-rpi2 backup erase partition filesystems mount checkargs_download unpack-custom install chroot build unpack umount fsck clean checkargs help
+.PHONY: build-rpi1 build-rpi2 install-rpi1 install-rpi2 unpack-rpi1 unpack-rpi2 backup erase partition filesystems mount checkargs_download unpack-custom install chroot build unpack umount fsck clean checkargs update-config-txt help
 
 all: build-rpi2
 
@@ -120,13 +120,18 @@ chroot: checkargs mount
 	-arch-chroot tmp/root /usr/bin/qemu-arm-static /bin/bash
 	umount tmp/root/boot
 
-dist/video-pi-rpi%.tar.bz2: checkargs | tmp/root/usr/bin/devmon
+clean: mount  ## Unmount DEVICE partitions and remove temp files created during the build.
 	-rm tmp/root/home/alarm/.bash_history
 	-rm -r tmp/root/home/alarm/install
 	-rm tmp/root/home/alarm/webcam/*
 	-rm tmp/root/root/.bash_history
 	-rm tmp/root/var/log/pacman.log
 	-rm -r tmp/root/var/cache/pacman/pkg/*
+
+update-config-txt: mount
+	cp -f src/boot/config* tmp/boot/
+
+dist/video-pi-rpi%.tar.bz2: checkargs clean | tmp/root/usr/bin/devmon
 	mount "$(DEVICE)1" tmp/root/boot
 	mkdir -p dist
 	cd tmp/root; su -c "bsdtar -cjf ../../$@ *"
@@ -152,9 +157,6 @@ umount:
 fsck: checkargs
 	fsck.vfat -a "$(DEVICE)1"
 	fsck.ext4 -a "$(DEVICE)2"
-
-clean: umount  ## Unmount DEVICE partitions and remove temp files created during the build.
-	-rm dist/*
 
 checkargs:
 ifeq (,$(DEVICE))
