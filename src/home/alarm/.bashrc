@@ -9,7 +9,9 @@
 PATH=$HOME/bin:$PATH
 
 # Autostart
-for f in $HOME/bin/autostart-console.d/*; do sh "$f"; done
+if [[ -d $HOME/bin/autostart-console.d ]]; then
+    for f in $HOME/bin/autostart-console.d/*; do sh "$f"; done
+fi
 
 # Aliases
 # https://wiki.archlinux.org/index.php/Bash#Aliases
