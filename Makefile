@@ -1,7 +1,7 @@
 .DELETE_ON_ERROR:
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: partition filesystems mount download unpack-arch unpack-videopi unpack-rpi unpack-my unpack-zku chroot build install build-rpi1 build-rpi2 install-rpi1 install-rpi2 backup unmount umount clean checkargs help
+.PHONY: build-rpi1 build-rpi2 install-rpi1 install-rpi2 unpack-rpi1 unpack-rpi2 backup erase partition filesystems mount checkargs_download unpack-custom install chroot build unpack umount fsck clean checkargs help
 
 all: build-rpi2
 
@@ -29,6 +29,18 @@ install-rpi2:  ## Install VideoPi image for RaspberryPi 1 to DEVICE.
 	$(MAKE) install
 	$(MAKE) umount
 
+unpack-rpi1:  ## Unpack VideoPi image for RaspberryPi 1 to DEVICE.
+	export version=1 && \
+	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
+	$(MAKE) unpack
+	$(MAKE) umount
+
+unpack-rpi2:  ## Unpack VideoPi image for RaspberryPi 1 to DEVICE.
+	export version=2 && \
+	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
+	$(MAKE) unpack
+	$(MAKE) umount
+
 backup: checkargs  ## Create an image of the whole DEVICE and store it to backup/.
 	sh -c "dd if=$(DEVICE) bs=1024 conv=noerror,sync | pv | gzip -c -9 > backup/video-pi-backup-`date +%Y%m%d-%H%M%S`.img.gz"
 
@@ -43,7 +55,7 @@ filesystems: checkargs partition  ## Create partitions and filesystems on the DE
 	mkfs.vfat "$(DEVICE)1"
 	mkfs.ext4 "$(DEVICE)2"
 
-mount: tmp/root tmp/boot
+mount: | tmp/root tmp/boot
 
 tmp/boot: checkargs
 	mkdir -p tmp/boot
@@ -53,40 +65,36 @@ tmp/root: checkargs
 	mkdir -p tmp/root
 	mount "$(DEVICE)2" tmp/root
 
-download: cache/$(filename_archlinux_arm)
+checkargs_download:
+ifeq (,$(filename_archlinux_arm))
+	@echo "You must set the filename_archlinux_arm variable."
+	@exit 1
+endif
 
 cache/%:
 	mkdir -p cache
 	cd cache; wget -c "http://archlinuxarm.org/os/$$(echo '$@' | sed -r 's/^cache\/(.+)$$/\1/')"
 
-unpack-arch: tmp/root/bin/bash
-
-tmp/root/bin/bash: mount download
+tmp/root/bin/bash: mount | cache/$(filename_archlinux_arm)
 	su -c "bsdtar -xpf cache/$(filename_archlinux_arm) -C tmp/root"
 	sync
 	-rm -r tmp/boot/*
 	mv tmp/root/boot/* tmp/boot
 
-unpack-videopi: tmp/root/home/alarm/bin/devmon-play-omxplayer.sh
-
-tmp/root/home/alarm/bin/devmon-play-omxplayer.sh: unpack-arch
+tmp/root/home/alarm/bin/devmon-play-omxplayer.sh: | tmp/root/bin/bash
 	cp -af src/* tmp/root
 	mv tmp/root/boot/* tmp/boot
 
-unpack-rpi: tmp/root/home/alarm/bin/my-autostart-xorg
+tmp/root/var/cache/pacman/pkg/PUT_DOWNLOADED_PACKAGES_HERE_TO_SPEED_UP_BUILDS: | tmp/root/home/alarm/bin/devmon-play-omxplayer.sh
+	cp -af src-rpi$(version)/* tmp/root
 
-tmp/root/home/alarm/bin/my-autostart-xorg: unpack-videopi
-	[[ -f tmp/root/home/alarm/bin/my-autostart-xorg ]] || cp -af src-rpi$(version)/* tmp/root # check using bash because makefile doesn't recognize symbolic links
-
-unpack-custom: unpack-rpi
+unpack-custom: | tmp/root/var/cache/pacman/pkg/PUT_DOWNLOADED_PACKAGES_HERE_TO_SPEED_UP_BUILDS
 ifneq (,$(CUSTOM))
 	for dir in $(CUSTOM); do cp -af src-custom/$$dir/* tmp/root; done
 	-mv tmp/root/boot/* tmp/boot
 endif
 
-chroot: tmp/root/usr/bin/devmon
-
-tmp/root/usr/bin/devmon: checkargs unpack-rpi unpack-custom
+tmp/root/usr/bin/devmon: checkargs mount | unpack-custom
 	-[[ -f tmp/root/usr/bin/qemu-arm-static ]] || \
 	update-binfmts --importdir /var/lib/binfmts/ --import; \
 	update-binfmts --display qemu-arm; \
@@ -98,11 +106,21 @@ tmp/root/usr/bin/devmon: checkargs unpack-rpi unpack-custom
 	mount "$(DEVICE)1" tmp/root/boot
 	-arch-chroot tmp/root /usr/bin/qemu-arm-static /bin/bash -c "/home/alarm/install/install.sh; exit"
 	umount tmp/root/boot
-	[[ -f tmp/root/usr/bin/devmon ]] && touch tmp/root/usr/bin/devmon # check if chroot install succeeded
 
-build: dist/video-pi-rpi$(version).tar.bz2
+chroot: checkargs mount
+	-[[ -f tmp/root/usr/bin/qemu-arm-static ]] || \
+	update-binfmts --importdir /var/lib/binfmts/ --import; \
+	update-binfmts --display qemu-arm; \
+	update-binfmts --enable qemu-arm
+	[[ -f tmp/root/usr/bin ]] || cp /usr/bin/qemu-arm-static tmp/root/usr/bin
+	-umount tmp/root/dev
+	-umount tmp/root/proc
+	-umount tmp/root/sys
+	mount "$(DEVICE)1" tmp/root/boot
+	-arch-chroot tmp/root /usr/bin/qemu-arm-static /bin/bash
+	umount tmp/root/boot
 
-dist/video-pi-rpi%.tar.bz2: checkargs chroot
+dist/video-pi-rpi%.tar.bz2: checkargs | tmp/root/usr/bin/devmon
 	-rm tmp/root/home/alarm/.bash_history
 	-rm -r tmp/root/home/alarm/install
 	-rm tmp/root/home/alarm/webcam/*
@@ -114,13 +132,16 @@ dist/video-pi-rpi%.tar.bz2: checkargs chroot
 	cd tmp/root; su -c "bsdtar -cjf ../../$@ *"
 	umount tmp/root/boot
 
-install: mount
+build: | dist/video-pi-rpi$(version).tar.bz2
+
+install: | tmp/root/usr/bin/devmon
+
+unpack: | dist/video-pi-rpi$(version).tar.bz2
 	su -c "bsdtar -xpf dist/video-pi-rpi$(version).tar.bz2 -C tmp/root"
+	chown root.root tmp/root/etc/sudoers
 	sync
 	-rm -r tmp/boot/*
 	mv tmp/root/boot/* tmp/boot
-
-unmount: umount
 
 umount:
 	-umount -R tmp/root
