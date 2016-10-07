@@ -92,6 +92,13 @@ hdmi_mode=31
 # Uncomment to overclock the ARM core. 700 MHz is the default.
 #arm_freq=800
 
+# https://wiki.archlinux.org/index.php/Raspberry_Pi#Audio
+dtparam=audio=on
+audio_pwm_mode=2
+
+# http://elinux.org/RPiconfig#Audio
+disable_audio_dither=1
+
 # for more options see http://elinux.org/RPi_config.txt
 
 ## Some over clocking settings, governor already set to ondemand

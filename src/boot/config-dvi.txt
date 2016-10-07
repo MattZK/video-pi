@@ -58,26 +58,26 @@ disable_overscan=1
 
 # Uncomment the following to adjust overscan. Use positive numbers if console
 # goes off screen, and negative if there is too much border
-overscan_left=24
-overscan_right=24
-overscan_top=24
-overscan_bottom=24
+#overscan_left=24
+#overscan_right=24
+#overscan_top=24
+#overscan_bottom=24
 
 # Uncomment to force a console size. By default it will be display's size minus
 # overscan.
-framebuffer_width=1920
-framebuffer_height=1080
+framebuffer_width=1280
+framebuffer_height=1024
 
 # Uncomment if hdmi display is not detected and composite is being output
 #hdmi_force_hotplug=1
 
 # Uncomment to force a specific HDMI mode (this will force VGA)
-hdmi_group=1
-hdmi_mode=31
+hdmi_group=2
+hdmi_mode=36
 
 # Uncomment to force a HDMI mode rather than DVI. This can make audio work in
 # DMT (computer monitor) modes
-#hdmi_drive=2
+hdmi_drive=2
 
 # Uncomment to set monitor mode to DMT
 #hdmi_group=2

@@ -90,7 +90,17 @@
 sdtv_mode=2
 
 # Uncomment to overclock the ARM core. 700 MHz is the default.
-arm_freq=800
+#arm_freq=800
+
+# https://wiki.archlinux.org/index.php/Raspberry_Pi#Audio
+dtparam=audio=on
+audio_pwm_mode=2
+
+# http://elinux.org/RPiconfig#Audio
+disable_audio_dither=1
+
+# Pretends all audio formats are unsupported by display. This means ALSA will default to analogue.
+hdmi_ignore_edid_audio=1
 
 # for more options see http://elinux.org/RPi_config.txt
 
@@ -121,9 +131,9 @@ arm_freq=800
 #over_voltage=6
 
 ##Turbo
-#arm_freq=1000
-#core_freq=500
-#sdram_freq=500
-#over_voltage=6
+arm_freq=1000
+core_freq=500
+sdram_freq=500
+over_voltage=6
 
 gpu_mem=64
