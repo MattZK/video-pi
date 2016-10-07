@@ -4,7 +4,7 @@ CMD="/usr/bin/omxplayer -b"
 
 IFS=$'\n'
 while true; do
-    for f in `find "$1" -type f | sort`
+    for f in `$HOME/bin/find.sh "$1"`
     do
         eval "$CMD \"$f\""
         # if [ $? -ne 0 ]; then
