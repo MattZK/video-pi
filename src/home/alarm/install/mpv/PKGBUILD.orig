@@ -3,15 +3,12 @@
 # Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
 # Contributor: Eivind Uggedal <eivind@uggedal.com>
 
-# ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
-#  - armv7/aarch64 needs to be built with fPIC
-
 pkgname=mpv
 epoch=1
-pkgver=0.16.0
-pkgrel=2
+pkgver=0.20.0
+pkgrel=1
 _waf_version=1.8.12
-pkgdesc='Video player based on MPlayer/mplayer2'
+pkgdesc='a free, open source, and cross-platform media player'
 arch=('i686' 'x86_64')
 license=('GPL')
 url='http://mpv.io'
@@ -21,41 +18,29 @@ depends=(
   'desktop-file-utils' 'hicolor-icon-theme' 'xdg-utils' 'lua52' 'libdvdnav'
   'libxrandr' 'jack' 'smbclient' 'rubberband'
 )
-makedepends=('mesa' 'python-docutils' 'ladspa' 'hardening-wrapper' 'git')
+makedepends=('mesa' 'python-docutils' 'ladspa' 'hardening-wrapper')
 optdepends=('youtube-dl: for video-sharing websites playback')
 options=('!emptydirs' '!buildflags')
-install=mpv.install
 source=("$pkgname-$pkgver.tar.gz::https://github.com/mpv-player/$pkgname/archive/v$pkgver.tar.gz"
-  "http://www.freehackers.org/~tnagy/release/waf-${_waf_version}"
-  'mpv-x11-do-not-set-set-_NET_WM_BYPASS_COMPOSITOR-by-default.patch::https://github.com/mpv-player/mpv/commit/2720e60ad00ff7cce1d80724bbd4b2b981748195.patch')
-sha256sums=('fc3619de0ede16fbb023ac72589090e8e77fd9d9e03a81adc728105d50ef38ba'
-  '01bf2beab2106d1558800c8709bc2c8e496d3da4a2ca343fe091f22fca60c98b'
-  'eb44faeddb707d2cee26eb844876e4594277e46454393defe6f6608f9a4362e5')
+  "http://www.freehackers.org/~tnagy/release/waf-${_waf_version}")
+sha256sums=('fe6ec9d2ded5ce84b963f54b812d579d04f944f4a737f3ae639c4d5d9e842b56'
+  '01bf2beab2106d1558800c8709bc2c8e496d3da4a2ca343fe091f22fca60c98b')
 
 prepare() {
   cd ${pkgname}-${pkgver}
 
   install -m755 "${srcdir}"/waf-${_waf_version} waf
-
-  # https://bugs.archlinux.org/task/48762
-  # https://github.com/mpv-player/mpv/issues/2997
-  # https://github.com/mpv-player/mpv/commit/2720e60ad00ff7cce1d80724bbd4b2b981748195
-  patch -Np1 < "${srcdir}"/mpv-x11-do-not-set-set-_NET_WM_BYPASS_COMPOSITOR-by-default.patch
-
-  ./bootstrap.py
 }
 
 build() {
   cd ${pkgname}-${pkgver}
 
-  [[ $CARCH == "armv7h" || $CARCH == "aarch64" ]] && CFLAGS+=" -fPIC" && CXXFLAGS+=" -fPIC"
-
   ./waf configure --prefix=/usr \
     --confdir=/etc/mpv \
-    --enable-zsh-comp \
-    --enable-libmpv-shared \
     --enable-cdda \
-    --enable-egl-x11
+    --enable-encoding \
+    --enable-libmpv-shared \
+    --enable-zsh-comp
 
   ./waf build
 }
