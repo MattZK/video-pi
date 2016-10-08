@@ -42,7 +42,8 @@ unpack-rpi2:  ## Unpack VideoPi image for RaspberryPi 1 to DEVICE.
 	$(MAKE) umount
 
 backup: checkargs  ## Create an image of the whole DEVICE and store it to backup/.
-	sh -c "dd if=$(DEVICE) bs=1024 conv=noerror,sync | pv | gzip -c -9 > backup/video-pi-backup-`date +%Y%m%d-%H%M%S`.img.gz"
+	-mkdir -p backup
+	dd if=$(DEVICE) bs=1024 conv=noerror,sync | pv | gzip -c -9 > "backup/video-pi-backup-`date +%Y%m%d-%H%M%S`.img.gz"
 
 erase: checkargs  ## Overwrite the whole DEVICE with zeros.
 	 # pv --timer --rate --stop-at-size -s "$$(blockdev --getsize64 $(DEVICE))" /dev/zero > $(DEVICE)
