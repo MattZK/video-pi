@@ -151,9 +151,9 @@ unpack: | dist/video-pi-rpi$(version).tar.bz2
 
 umount:
 	-umount -R tmp/root
-	-rm -r tmp/root
+	-rmdir tmp/root
 	-umount tmp/boot
-	-rm -r tmp/boot
+	-rmdir tmp/boot
 
 fsck: checkargs
 	fsck.vfat -a "$(DEVICE)1"
