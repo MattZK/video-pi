@@ -54,7 +54,7 @@
 
 # Uncomment this if your display has a black border of unused pixels visible
 # and your display can output without overscan
-disable_overscan=1
+#disable_overscan=1
 
 # Uncomment the following to adjust overscan. Use positive numbers if console
 # goes off screen, and negative if there is too much border
@@ -72,8 +72,8 @@ disable_overscan=1
 #hdmi_force_hotplug=1
 
 # Uncomment to force a specific HDMI mode (this will force VGA)
-hdmi_group=1
-hdmi_mode=31
+#hdmi_group=1
+#hdmi_mode=5
 
 # Uncomment to force a HDMI mode rather than DVI. This can make audio work in
 # DMT (computer monitor) modes
@@ -84,10 +84,11 @@ hdmi_drive=2
 
 # Uncomment to increase signal to HDMI, if you have interference, blanking, or
 # no display
-#config_hdmi_boost=4
+config_hdmi_boost=7
 
 # Uncomment for composite PAL
 #sdtv_mode=2
+sdtv_aspect=3
 
 # Uncomment to overclock the ARM core. 700 MHz is the default.
 #arm_freq=800

@@ -84,10 +84,11 @@ hdmi_drive=2
 
 # Uncomment to increase signal to HDMI, if you have interference, blanking, or
 # no display
-#config_hdmi_boost=4
+config_hdmi_boost=7
 
 # Uncomment for composite PAL
 #sdtv_mode=2
+sdtv_aspect=3
 
 # Uncomment to overclock the ARM core. 700 MHz is the default.
 #arm_freq=800
