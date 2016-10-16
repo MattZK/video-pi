@@ -11,6 +11,7 @@ upgrade:
 	-mv /etc/sudoers /etc/sudoers.bak
 	pacman -Syu --noconfirm --needed sudo
 	mv /etc/sudoers.bak /etc/sudoers
+	chown root.root /etc/sudoers
 
 gui: /usr/bin/X /usr/bin/dwm /usr/bin/xterm
 
