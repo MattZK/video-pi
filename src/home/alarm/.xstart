@@ -7,6 +7,8 @@ xset -dpms
 xsetroot -cursor_name left_ptr
 # pulseaudio --start
 amixer sset Master unmute
+amixer sset Master 90%
+amixer sset PCM 90%
 feh --bg-fill /opt/video_pi/video_pi_desktop.png
 # xcompmgr -c &
 
