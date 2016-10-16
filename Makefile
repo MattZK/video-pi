@@ -76,7 +76,7 @@ cache/%:
 	mkdir -p cache
 	cd cache; wget -c "http://archlinuxarm.org/os/$$(echo '$@' | sed -r 's/^cache\/(.+)$$/\1/')"
 
-tmp/root/bin/bash: mount | cache/$(filename_archlinux_arm)
+tmp/root/bin/bash: | cache/$(filename_archlinux_arm)
 	su -c "bsdtar -xpf cache/$(filename_archlinux_arm) -C tmp/root"
 	sync
 	-rm -r tmp/boot/*
@@ -95,7 +95,7 @@ ifneq (,$(CUSTOM))
 	-mv tmp/root/boot/* tmp/boot
 endif
 
-tmp/root/usr/bin/devmon: checkargs mount | unpack-custom
+tmp/root/usr/bin/devmon: checkargs | unpack-custom
 	-[[ -f tmp/root/usr/bin/qemu-arm-static ]] || \
 	update-binfmts --importdir /var/lib/binfmts/ --import; \
 	update-binfmts --display qemu-arm; \
@@ -108,7 +108,7 @@ tmp/root/usr/bin/devmon: checkargs mount | unpack-custom
 	-arch-chroot tmp/root /usr/bin/qemu-arm-static /bin/bash -c "/home/alarm/install/install.sh; exit"
 	umount tmp/root/boot
 
-chroot: checkargs mount
+chroot: checkargs
 	-[[ -f tmp/root/usr/bin/qemu-arm-static ]] || \
 	update-binfmts --importdir /var/lib/binfmts/ --import; \
 	update-binfmts --display qemu-arm; \
@@ -121,7 +121,7 @@ chroot: checkargs mount
 	-arch-chroot tmp/root /usr/bin/qemu-arm-static /bin/bash
 	umount tmp/root/boot
 
-clean: mount  ## Unmount DEVICE partitions and remove temp files created during the build.
+clean:  ## Remove temp files created during the build.
 	-rm tmp/root/home/alarm/.bash_history
 	-rm -r tmp/root/home/alarm/install
 	-rm tmp/root/home/alarm/webcam/*
@@ -129,10 +129,10 @@ clean: mount  ## Unmount DEVICE partitions and remove temp files created during 
 	-rm tmp/root/var/log/pacman.log
 	-rm -r tmp/root/var/cache/pacman/pkg/*
 
-update-config-txt: mount
+update-config-txt:
 	cp -f src/boot/config* tmp/boot/
 
-dist/video-pi-rpi%.tar.bz2: checkargs clean | tmp/root/usr/bin/devmon
+dist/video-pi-rpi%.tar.bz2: checkargs | mount tmp/root/usr/bin/devmon clean
 	mount "$(DEVICE)1" tmp/root/boot
 	mkdir -p dist
 	cd tmp/root; su -c "bsdtar -cjf ../../$@ *"
