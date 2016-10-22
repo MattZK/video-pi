@@ -8,36 +8,42 @@ all: build-rpi2
 build-rpi1:  ## Build VideoPi image for RaspberryPi 1.
 	export version=1 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
+	$(MAKE) mount
 	$(MAKE) build
 	$(MAKE) umount
 
 build-rpi2:  ## Build VideoPi image for RaspberryPi 2.
 	export version=2 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
+	$(MAKE) mount
 	$(MAKE) build
 	$(MAKE) umount
 
 install-rpi1:  ## Install VideoPi image for RaspberryPi 1 to DEVICE.
 	export version=1 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
+	$(MAKE) mount
 	$(MAKE) install
 	$(MAKE) umount
 
 install-rpi2:  ## Install VideoPi image for RaspberryPi 1 to DEVICE.
 	export version=2 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
+	$(MAKE) mount
 	$(MAKE) install
 	$(MAKE) umount
 
 unpack-rpi1:  ## Unpack VideoPi image for RaspberryPi 1 to DEVICE.
 	export version=1 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
+	$(MAKE) mount
 	$(MAKE) unpack
 	$(MAKE) umount
 
 unpack-rpi2:  ## Unpack VideoPi image for RaspberryPi 1 to DEVICE.
 	export version=2 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
+	$(MAKE) mount
 	$(MAKE) unpack
 	$(MAKE) umount
 
