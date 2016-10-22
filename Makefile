@@ -1,7 +1,7 @@
 .DELETE_ON_ERROR:
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: build-rpi1 build-rpi2 install-rpi1 install-rpi2 unpack-rpi1 unpack-rpi2 backup erase partition filesystems mount checkargs_download unpack-custom install chroot build unpack umount fsck clean checkargs update-config-txt help
+.PHONY: build-rpi1 build-rpi2 install-rpi1 install-rpi2 unpack-rpi1 unpack-rpi2 backup restore erase partition filesystems mount unpack-custom install chroot build unpack umount fsck clean checkargs checkargs_download checkargs_restore update-config-txt help
 
 all: build-rpi2
 
@@ -51,6 +51,10 @@ backup: checkargs  ## Create an image of the whole DEVICE and store it to backup
 	-mkdir -p backup
 	dd if=$(DEVICE) bs=1024 conv=noerror,sync | pv | gzip -c -9 > "backup/video-pi-backup-`date +%Y%m%d-%H%M%S`.img.gz"
 
+restore: checkargs checkargs_restore  ## Install an image of the whole device to DEVICE.
+	-gunzip -c $(filename_image) | dd of=$(DEVICE) bs=4M status=progress
+	sync
+
 erase: checkargs  ## Overwrite the whole DEVICE with zeros.
 	 # pv --timer --rate --stop-at-size -s "$$(blockdev --getsize64 $(DEVICE))" /dev/zero > $(DEVICE)
 	dd if=/dev/zero of="$(DEVICE)" iflag=nocache oflag=direct bs=4096
@@ -71,12 +75,6 @@ tmp/boot: checkargs
 tmp/root: checkargs
 	mkdir -p tmp/root
 	mount "$(DEVICE)2" tmp/root
-
-checkargs_download:
-ifeq (,$(filename_archlinux_arm))
-	@echo "You must set the filename_archlinux_arm variable."
-	@exit 1
-endif
 
 cache/%:
 	mkdir -p cache
@@ -169,6 +167,18 @@ checkargs:
 ifeq (,$(DEVICE))
 	@echo "You must set the DEVICE variable."
 	@echo "Example: make backup DEVICE=/dev/sdX"
+	@exit 1
+endif
+
+checkargs_download:
+ifeq (,$(filename_archlinux_arm))
+	@echo "You must set the filename_archlinux_arm variable."
+	@exit 1
+endif
+
+checkargs_restore:
+ifeq (,$(filename_image))
+	@echo "You must set the filename_image variable."
 	@exit 1
 endif
 
