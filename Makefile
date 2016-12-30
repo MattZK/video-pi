@@ -1,51 +1,39 @@
 .DELETE_ON_ERROR:
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: build-rpi1 build-rpi2 install-rpi1 install-rpi2 unpack-rpi1 unpack-rpi2 backup restore erase partition filesystems mount unpack-custom install chroot build unpack umount fsck clean checkargs checkargs_download checkargs_restore update-config-txt help
+.PHONY: build-rpi1 build-rpi2 install-rpi1 install-rpi2 unpack-rpi1 unpack-rpi2 backup restore erase partition filesystems mount unpack-custom install chroot package unpack umount fsck clean checkargs checkargs_download checkargs_restore update-config-txt help
 
 all: build-rpi2
 
 build-rpi1:  ## Build VideoPi image for RaspberryPi 1.
 	export version=1 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
-	$(MAKE) mount
-	$(MAKE) build
-	$(MAKE) umount
+	$(MAKE) mount install clean package umount
 
 build-rpi2:  ## Build VideoPi image for RaspberryPi 2.
 	export version=2 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
-	$(MAKE) mount
-	$(MAKE) build
-	$(MAKE) umount
+	$(MAKE) mount install clean package umount
 
 install-rpi1:  ## Install VideoPi image for RaspberryPi 1 to DEVICE.
 	export version=1 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
-	$(MAKE) mount
-	$(MAKE) install
-	$(MAKE) umount
+	$(MAKE) mount install umount
 
 install-rpi2:  ## Install VideoPi image for RaspberryPi 1 to DEVICE.
 	export version=2 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
-	$(MAKE) mount
-	$(MAKE) install
-	$(MAKE) umount
+	$(MAKE) mount install umount
 
 unpack-rpi1:  ## Unpack VideoPi image for RaspberryPi 1 to DEVICE.
 	export version=1 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
-	$(MAKE) mount
-	$(MAKE) unpack
-	$(MAKE) umount
+	$(MAKE) mount unpack umount
 
 unpack-rpi2:  ## Unpack VideoPi image for RaspberryPi 1 to DEVICE.
 	export version=2 && \
 	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
-	$(MAKE) mount
-	$(MAKE) unpack
-	$(MAKE) umount
+	$(MAKE) mount unpack umount
 
 backup: checkargs  ## Create an image of the whole DEVICE and store it to backup/.
 	-mkdir -p backup
@@ -125,7 +113,7 @@ chroot: checkargs
 	-arch-chroot tmp/root /usr/bin/qemu-arm-static /bin/bash
 	umount tmp/root/boot
 
-clean:  ## Remove temp files created during the build.
+clean:  ## Remove temp files created during the installation.
 	-rm tmp/root/home/alarm/.bash_history
 	-rm -r tmp/root/home/alarm/install
 	-rm tmp/root/home/alarm/webcam/*
@@ -136,17 +124,17 @@ clean:  ## Remove temp files created during the build.
 update-config-txt:
 	cp -f src/boot/config* tmp/boot/
 
-dist/video-pi-rpi%.tar.bz2: checkargs | mount tmp/root/usr/bin/devmon clean
+dist/video-pi-rpi%.tar.bz2: checkargs
 	mount "$(DEVICE)1" tmp/root/boot
 	mkdir -p dist
 	cd tmp/root; su -c "bsdtar -cjf ../../$@ *"
 	umount tmp/root/boot
 
-build: | dist/video-pi-rpi$(version).tar.bz2
+package: | dist/video-pi-rpi$(version).tar.bz2
 
 install: | tmp/root/usr/bin/devmon
 
-unpack: | dist/video-pi-rpi$(version).tar.bz2
+unpack:
 	su -c "bsdtar -xpf dist/video-pi-rpi$(version).tar.bz2 -C tmp/root"
 	chown root.root tmp/root/etc/sudoers
 	sync
