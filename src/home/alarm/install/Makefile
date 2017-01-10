@@ -3,7 +3,7 @@ ifeq ($(arch), armv7l)
     arch = armv7h
 endif
 
-all: upgrade gui sound player udevil permissions
+all: upgrade gui sound player udevil antimicro permissions
 
 .PHONY: upgrade gui sound player network webcam permissions udevil mpv antimicro
 
