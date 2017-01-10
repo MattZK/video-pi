@@ -1,3 +1,3 @@
 #!/bin/sh
-antimicro --profile .config/antimicro/gamepad_speedlink_strike_mapping.gamecontroller.amgp\
-	  --no-tray --hidden &
+antimicro --profile "$HOME/.config/antimicro/gamepad_speedlink_sl_6555_sbk.gamecontroller.amgp" \
+          --no-tray --hidden &
