@@ -1,46 +1,26 @@
+ifeq ($(VERSION), 1)
+	filename_archlinux_arm = ArchLinuxARM-rpi-latest.tar.gz
+endif
+ifeq ($(VERSION), 2)
+	filename_archlinux_arm = ArchLinuxARM-rpi-2-latest.tar.gz
+endif
+ifeq ($(VERSION), 3)
+	filename_archlinux_arm = ArchLinuxARM-rpi-3-latest.tar.gz
+endif
+
 .DELETE_ON_ERROR:
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: build-rpi1 build-rpi2 install-rpi1 install-rpi2 unpack-rpi1 unpack-rpi2 backup restore erase partition filesystems mount unpack-custom install chroot package unpack umount fsck clean checkargs checkargs_download checkargs_restore update-config-txt help
+.PHONY: all backup restore erase partition filesystems mount unpack-custom install chroot package unpack umount fsck clean checkargs checkargs-version checkargs-path update-config-txt help
 
-all: build-rpi2
-
-build-rpi1:  ## Build VideoPi image for RaspberryPi 1.
-	export version=1 && \
-	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
-	$(MAKE) mount install clean package umount
-
-build-rpi2:  ## Build VideoPi image for RaspberryPi 2.
-	export version=2 && \
-	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
-	$(MAKE) mount install clean package umount
-
-install-rpi1:  ## Install VideoPi image for RaspberryPi 1 to DEVICE.
-	export version=1 && \
-	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
-	$(MAKE) mount install umount
-
-install-rpi2:  ## Install VideoPi image for RaspberryPi 1 to DEVICE.
-	export version=2 && \
-	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
-	$(MAKE) mount install umount
-
-unpack-rpi1:  ## Unpack VideoPi image for RaspberryPi 1 to DEVICE.
-	export version=1 && \
-	export filename_archlinux_arm="ArchLinuxARM-rpi-latest.tar.gz" && \
-	$(MAKE) mount unpack umount
-
-unpack-rpi2:  ## Unpack VideoPi image for RaspberryPi 1 to DEVICE.
-	export version=2 && \
-	export filename_archlinux_arm="ArchLinuxARM-rpi-2-latest.tar.gz" && \
-	$(MAKE) mount unpack umount
+all: mount install clean package umount ## Install VideoPi for RPi version VERSION to device DEVICE and then create a disk image.
 
 backup: checkargs  ## Create an image of the whole DEVICE and store it to backup/.
 	-mkdir -p backup
 	dd if=$(DEVICE) bs=1024 conv=noerror,sync | pv | gzip -c -9 > "backup/video-pi-backup-`date +%Y%m%d-%H%M%S`.img.gz"
 
-restore: checkargs checkargs_restore  ## Install an image of the whole device to DEVICE.
-	-gunzip -c $(filename_image) | dd of=$(DEVICE) bs=4M status=progress
+restore: checkargs checkargs-path  ## Install an image PATH of the whole device to DEVICE.
+	-gunzip -c $(PATH) | dd of=$(DEVICE) bs=4M status=progress
 	sync
 
 erase: checkargs  ## Overwrite the whole DEVICE with zeros.
@@ -68,18 +48,18 @@ cache/%:
 	mkdir -p cache
 	cd cache; wget -c "http://archlinuxarm.org/os/$$(echo '$@' | sed -r 's/^cache\/(.+)$$/\1/')"
 
-tmp/root/bin/bash: | cache/$(filename_archlinux_arm)
+tmp/root/bin/bash: checkargs-version | cache/$(filename_archlinux_arm)
 	su -c "bsdtar -xpf cache/$(filename_archlinux_arm) -C tmp/root"
 	sync
 	-rm -r tmp/boot/*
-	mv tmp/root/boot/* tmp/boot
+	-mv tmp/root/boot/* tmp/boot
 
-tmp/root/home/alarm/bin/devmon-play-omxplayer.sh: | tmp/root/bin/bash
+tmp/root/home/alarm/install/Makefile: | tmp/root/bin/bash
 	cp -af src/* tmp/root
 	mv tmp/root/boot/* tmp/boot
 
-tmp/root/var/cache/pacman/pkg/PUT_DOWNLOADED_PACKAGES_HERE_TO_SPEED_UP_BUILDS: | tmp/root/home/alarm/bin/devmon-play-omxplayer.sh
-	cp -af src-rpi$(version)/* tmp/root
+tmp/root/var/cache/pacman/pkg/PUT_DOWNLOADED_PACKAGES_HERE_TO_SPEED_UP_BUILDS: checkargs-version | tmp/root/home/alarm/install/Makefile
+	cp -af src-rpi$(VERSION)/* tmp/root
 
 unpack-custom: | tmp/root/var/cache/pacman/pkg/PUT_DOWNLOADED_PACKAGES_HERE_TO_SPEED_UP_BUILDS
 ifneq (,$(CUSTOM))
@@ -88,16 +68,28 @@ ifneq (,$(CUSTOM))
 endif
 
 tmp/root/usr/bin/devmon: checkargs | unpack-custom
+ifeq ($(VERSION),3)
+	-[[ -f tmp/root/usr/bin/qemu-aarch64-static ]] || \
+	update-binfmts --importdir /var/lib/binfmts/ --import; \
+	update-binfmts --display qemu-aarch64; \
+	update-binfmts --enable qemu-aarch64
+	[[ -f tmp/root/usr/bin ]] || cp /usr/bin/qemu-aarch64-static tmp/root/usr/bin
+else
 	-[[ -f tmp/root/usr/bin/qemu-arm-static ]] || \
 	update-binfmts --importdir /var/lib/binfmts/ --import; \
 	update-binfmts --display qemu-arm; \
 	update-binfmts --enable qemu-arm
 	[[ -f tmp/root/usr/bin ]] || cp /usr/bin/qemu-arm-static tmp/root/usr/bin
+endif
 	-umount tmp/root/dev
 	-umount tmp/root/proc
 	-umount tmp/root/sys
 	mount "$(DEVICE)1" tmp/root/boot
+ifeq ($(VERSION),3)
+	-arch-chroot tmp/root /usr/bin/qemu-aarch64-static /bin/bash -c "/home/alarm/install/install.sh; exit"
+else
 	-arch-chroot tmp/root /usr/bin/qemu-arm-static /bin/bash -c "/home/alarm/install/install.sh; exit"
+endif
 	umount tmp/root/boot
 
 chroot: checkargs
@@ -122,6 +114,7 @@ clean:  ## Remove temp files created during the installation.
 	-rm -r tmp/root/var/cache/pacman/pkg/*
 
 update-config-txt:
+	cp -f src/boot/cmdline* tmp/boot/
 	cp -f src/boot/config* tmp/boot/
 
 dist/video-pi-rpi%.tar.bz2: checkargs
@@ -130,12 +123,12 @@ dist/video-pi-rpi%.tar.bz2: checkargs
 	cd tmp/root; su -c "bsdtar -cjf ../../$@ *"
 	umount tmp/root/boot
 
-package: | dist/video-pi-rpi$(version).tar.bz2
+package: checkargs-version | dist/video-pi-rpi$(VERSION).tar.bz2
 
 install: | tmp/root/usr/bin/devmon
 
-unpack:
-	su -c "bsdtar -xpf dist/video-pi-rpi$(version).tar.bz2 -C tmp/root"
+unpack: checkargs-version
+	su -c "bsdtar -xpf dist/video-pi-rpi$(VERSION).tar.bz2 -C tmp/root"
 	chown root.root tmp/root/etc/sudoers
 	sync
 	-rm -r tmp/boot/*
@@ -158,15 +151,17 @@ ifeq (,$(DEVICE))
 	@exit 1
 endif
 
-checkargs_download:
-ifeq (,$(filename_archlinux_arm))
-	@echo "You must set the filename_archlinux_arm variable."
+checkargs-version:
+ifeq (,$(VERSION))
+	@echo "You must set the VERSION variable."
+	@echo "Example: make build VERSION=3"
 	@exit 1
 endif
 
-checkargs_restore:
-ifeq (,$(filename_image))
-	@echo "You must set the filename_image variable."
+checkargs-path:
+ifeq (,$(PATH))
+	@echo "You must set the PATH variable."
+	@echo "Example: make restore PATH=/tmp/my_videopi.img"
 	@exit 1
 endif
 
