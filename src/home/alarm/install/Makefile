@@ -58,16 +58,16 @@ udevil-git/udevil-git-%.pkg.tar.xz:
 	pacman -S --noconfirm --needed git intltool --asdeps
 	su - alarm sh -c "cd /home/alarm/install/udevil-git; makepkg"
 
-mpv: mpv/mpv-1\:0.22.0-1-$(arch).pkg.tar.xz
-	pacman -U --noconfirm --needed "mpv/mpv-1:0.22.0-1-$(arch).pkg.tar.xz"
+mpv: mpv/mpv-1\:0.23.0-1-$(arch).pkg.tar.xz
+	pacman -U --noconfirm --needed "mpv/mpv-1:0.23.0-1-$(arch).pkg.tar.xz"
 
 mpv/mpv-%.pkg.tar.xz:
 	[[ -f /usr/bin/fakeroot ]] || pacman -S --noconfirm --needed base-devel ccache
 	pacman -S --noconfirm --needed ffmpeg lcms2 libcdio-paranoia enca libxss libxkbcommon libcaca desktop-file-utils hicolor-icon-theme xdg-utils lua52 libdvdnav libguess jack smbclient rubberband python-docutils ladspa hardening-wrapper --asdeps
 	su - alarm sh -c "cd /home/alarm/install/mpv; makepkg"
 
-antimicro: antimicro/antimicro-2.21-1-$(arch).pkg.tar.xz
-	pacman -U --noconfirm --needed "antimicro/antimicro-2.21-1-$(arch).pkg.tar.xz"
+antimicro: antimicro/antimicro-2.23-1-$(arch).pkg.tar.xz
+	pacman -U --noconfirm --needed "antimicro/antimicro-2.23-1-$(arch).pkg.tar.xz"
 
 antimicro/antimicro-%.pkg.tar.xz:
 	[[ -f /usr/bin/fakeroot ]] || pacman -S --noconfirm --needed base-devel ccache
