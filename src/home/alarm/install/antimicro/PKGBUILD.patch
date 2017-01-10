@@ -1,15 +1,15 @@
---- PKGBUILD.orig	2016-04-03 09:14:59.000000000 +0200
-+++ PKGBUILD	2016-04-09 15:05:48.846040719 +0200
-@@ -5,7 +5,7 @@
- pkgver=2.21
+--- PKGBUILD.orig	2016-12-30 23:11:05.213739481 +0100
++++ PKGBUILD	2016-12-30 23:11:56.682979657 +0100
+@@ -6,7 +6,7 @@
+ pkgver=2.23
  pkgrel=1
  pkgdesc="Graphical program used to map keyboard keys and mouse controls to gamepad buttons"
 -arch=('i686' 'x86_64')
-+arch=('i686' 'x86_64' 'armv6h' 'armv7h')
- url="https://github.com/Ryochan7/antimicro"
++arch=('i686' 'x86_64' 'armv6h' 'armv7h' 'aarch64')
+ url="https://github.com/AntiMicro/antimicro"
  license=('GPL3')
- depends=('libxkbcommon-x11' 'libxtst' 'qt5-base' 'sdl2')
-@@ -31,4 +31,3 @@
+ depends=('libxkbcommon-x11' 'libxtst' 'qt5-base' 'sdl2' 'shared-mime-info' 'desktop-file-utils')
+@@ -30,4 +30,3 @@
  
    make DESTDIR="${pkgdir}" install
  }

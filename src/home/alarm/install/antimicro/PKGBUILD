@@ -1,23 +1,23 @@
+# Maintainer: grimi <grimi at poczta dot fm>
 # Maintainer: Thomas Nordenmark <t.nordenmark@gmail.com>
 # Developer: Travis Nickles <nickles.travis@gmail.com>
 
 pkgname=antimicro
-pkgver=2.21
+pkgver=2.23
 pkgrel=1
 pkgdesc="Graphical program used to map keyboard keys and mouse controls to gamepad buttons"
-arch=('i686' 'x86_64' 'armv6h' 'armv7h')
-url="https://github.com/Ryochan7/antimicro"
+arch=('i686' 'x86_64' 'armv6h' 'armv7h' 'aarch64')
+url="https://github.com/AntiMicro/antimicro"
 license=('GPL3')
-depends=('libxkbcommon-x11' 'libxtst' 'qt5-base' 'sdl2')
+depends=('libxkbcommon-x11' 'libxtst' 'qt5-base' 'sdl2' 'shared-mime-info' 'desktop-file-utils')
 makedepends=('cmake' 'gettext' 'itstool' 'qt5-tools')
-install="${pkgname}.install"
-#source=("${pkgname}-${pkgver}.tar.gz::ttps://github.com/Ryochan7/${pkgname}/archive/${pkgver}.tar.gz")
-source=("http://pkgs.fedoraproject.org/lookaside/pkgs/${pkgname}/${pkgname}-${pkgver}.tar.gz/2064888967031e847c255efef941b45e/${pkgname}-${pkgver}.tar.gz")
-md5sums=('2064888967031e847c255efef941b45e')
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/AntiMicro/${pkgname}/archive/${pkgver}.tar.gz")
+sha1sums=('8656ce94a1eac2a0934e62db42e386bc481708bb')
+
+
 
 build() {
-  #cd ${pkgname}-${pkgver}
-  cd ${pkgname}-*/
+  cd ${pkgname}-${pkgver}
 
   mkdir -p build && cd build
   cmake -DCMAKE_INSTALL_PREFIX=/usr -DUSE_SDL_2=ON -DWITH_XTEST=ON \
@@ -26,8 +26,7 @@ build() {
 }
 
 package() {
-  #cd ${pkgname}-${pkgver}/build
-  cd ${pkgname}-*/build/
+  cd ${pkgname}-${pkgver}/build
 
   make DESTDIR="${pkgdir}" install
 }
