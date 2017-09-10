@@ -8,7 +8,6 @@ ifeq ($(VERSION), 3)
 	filename_archlinux_arm = ArchLinuxARM-rpi-3-latest.tar.gz
 endif
 
-.DELETE_ON_ERROR:
 .EXPORT_ALL_VARIABLES:
 
 .PHONY: all backup restore erase partition filesystems mount unpack-custom install chroot package unpack umount fsck clean checkargs checkargs-version checkargs-path update-config-txt help
