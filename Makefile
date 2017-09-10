@@ -10,7 +10,7 @@ endif
 
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: all backup restore erase partition filesystems mount unpack-custom install chroot package unpack umount fsck clean checkargs checkargs-version checkargs-path update-config-txt help
+.PHONY: all backup restore erase partition filesystems mount unpack-custom install chroot-setup chroot-teardown chroot package unpack umount fsck clean checkargs checkargs-version checkargs-path update-config-txt help
 
 all: mount install clean package umount ## Install VideoPi for RPi version VERSION to device DEVICE and then create a disk image.
 
@@ -66,7 +66,7 @@ ifneq (,$(CUSTOM))
 	-mv tmp/root/boot/* tmp/boot
 endif
 
-tmp/root/usr/bin/devmon: checkargs | unpack-custom
+chroot-setup: checkargs
 ifeq ($(VERSION),3)
 	-[[ -f tmp/root/usr/bin/qemu-aarch64-static ]] || \
 	update-binfmts --importdir /var/lib/binfmts/ --import; \
@@ -84,25 +84,25 @@ endif
 	-umount tmp/root/proc
 	-umount tmp/root/sys
 	mount "$(DEVICE)1" tmp/root/boot
+
+chroot-teardown:
+	umount tmp/root/boot
+
+tmp/root/usr/bin/devmon: | unpack-custom chroot-setup
 ifeq ($(VERSION),3)
 	-arch-chroot tmp/root /usr/bin/qemu-aarch64-static /bin/bash -c "/home/alarm/install/install.sh; exit"
 else
 	-arch-chroot tmp/root /usr/bin/qemu-arm-static /bin/bash -c "/home/alarm/install/install.sh; exit"
 endif
-	umount tmp/root/boot
+	$(MAKE) chroot-teardown
 
-chroot: checkargs
-	-[[ -f tmp/root/usr/bin/qemu-arm-static ]] || \
-	update-binfmts --importdir /var/lib/binfmts/ --import; \
-	update-binfmts --display qemu-arm; \
-	update-binfmts --enable qemu-arm
-	[[ -f tmp/root/usr/bin ]] || cp /usr/bin/qemu-arm-static tmp/root/usr/bin
-	-umount tmp/root/dev
-	-umount tmp/root/proc
-	-umount tmp/root/sys
-	mount "$(DEVICE)1" tmp/root/boot
+chroot: | chroot-setup
+ifeq ($(VERSION),3)
+	-arch-chroot tmp/root /usr/bin/qemu-aarch64-static /bin/bash
+else
 	-arch-chroot tmp/root /usr/bin/qemu-arm-static /bin/bash
-	umount tmp/root/boot
+endif
+	$(MAKE) chroot-teardown
 
 clean:  ## Remove temp files created during the installation.
 	-rm tmp/root/home/alarm/.bash_history

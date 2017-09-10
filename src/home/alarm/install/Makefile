@@ -28,7 +28,7 @@ permissions:
 	gpasswd -a alarm video
 
 /usr/bin/X:
-	pacman -S --noconfirm --needed xorg-server xorg-server-utils xorg-xinit xf86-video-fbdev xorg-apps xorg-bdftopcf xorg-iceauth xorg-luit xorg-mkfontdir xorg-mkfontscale xorg-sessreg xorg-setxkbmap xorg-smproxy xorg-x11perf xorg-xauth xorg-xbacklight xorg-xcmsdb xorg-xcursorgen xorg-xdpyinfo xorg-xdriinfo xorg-xev xorg-xgamma xorg-xhost xorg-xinput xorg-xkbcomp xorg-xkbevd xorg-xkbutils xorg-xkill xorg-xlsatoms xorg-xlsclients xorg-xmodmap xorg-xpr xorg-xprop xorg-xrandr xorg-xrdb xorg-xrefresh xorg-xset xorg-xsetroot xorg-xvinfo xorg-xwd xorg-xwininfo xorg-xwud xorg-fonts
+	pacman -S --noconfirm --needed xorg-server xorg-xinit xf86-video-fbdev xorg-apps xorg-bdftopcf xorg-iceauth xorg-luit xorg-mkfontdir xorg-mkfontscale xorg-sessreg xorg-setxkbmap xorg-smproxy xorg-x11perf xorg-xauth xorg-xbacklight xorg-xcmsdb xorg-xcursorgen xorg-xdpyinfo xorg-xdriinfo xorg-xev xorg-xgamma xorg-xhost xorg-xinput xorg-xkbcomp xorg-xkbevd xorg-xkbutils xorg-xkill xorg-xlsatoms xorg-xlsclients xorg-xmodmap xorg-xpr xorg-xprop xorg-xrandr xorg-xrdb xorg-xrefresh xorg-xset xorg-xsetroot xorg-xvinfo xorg-xwd xorg-xwininfo xorg-xwud xorg-fonts
 
 /usr/bin/dwm:
 	pacman -S --noconfirm dwm dmenu feh
@@ -58,12 +58,12 @@ udevil-git/udevil-git-%.pkg.tar.xz:
 	pacman -S --noconfirm --needed git intltool --asdeps
 	su - alarm sh -c "cd /home/alarm/install/udevil-git; makepkg"
 
-mpv: mpv/mpv-1\:0.23.0-1-$(arch).pkg.tar.xz
+mpv: mpv/mpv-1\:0.25.0-3-$(arch).pkg.tar.xz
 	pacman -U --noconfirm --needed "mpv/mpv-1:0.23.0-1-$(arch).pkg.tar.xz"
 
 mpv/mpv-%.pkg.tar.xz:
 	[[ -f /usr/bin/fakeroot ]] || pacman -S --noconfirm --needed base-devel ccache
-	pacman -S --noconfirm --needed ffmpeg lcms2 libcdio-paranoia enca libxss libxkbcommon libcaca desktop-file-utils hicolor-icon-theme xdg-utils lua52 libdvdnav libguess jack smbclient rubberband python-docutils ladspa hardening-wrapper --asdeps
+	pacman -S --noconfirm --needed ffmpeg lcms2 libcdio-paranoia enca libxss libxkbcommon libcaca desktop-file-utils hicolor-icon-theme xdg-utils lua52 libdvdnav libguess jack smbclient rubberband python-docutils ladspa hardening-wrapper uchardet --asdeps
 	su - alarm sh -c "cd /home/alarm/install/mpv; makepkg"
 
 antimicro: antimicro/antimicro-2.23-1-$(arch).pkg.tar.xz
