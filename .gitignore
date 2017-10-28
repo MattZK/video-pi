@@ -3,6 +3,7 @@
 /dist
 /tmp
 /src*/var/cache/pacman/pkg/*.pkg.tar.xz
+/src*/var/lib/pacman/sync/*.db
 /src-custom/*
 !/src-custom/example
 !/src-custom/gamepad

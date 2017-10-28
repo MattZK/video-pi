@@ -50,20 +50,21 @@ permissions:
 	ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
 	netctl enable my-network
 
-udevil: udevil-git/udevil-git-20151016.216-1-$(arch).pkg.tar.xz
-	pacman -U --noconfirm --needed "udevil-git/udevil-git-20151016.216-1-$(arch).pkg.tar.xz"
+udevil: udevil-git/udevil-git-20170628.216-1-$(arch).pkg.tar.xz
+	pacman -U --noconfirm --needed "udevil-git/udevil-git-20170628.216-1-$(arch).pkg.tar.xz"
 
 udevil-git/udevil-git-%.pkg.tar.xz:
 	[[ -f /usr/bin/fakeroot ]] || pacman -S --noconfirm --needed base-devel ccache
 	pacman -S --noconfirm --needed git intltool --asdeps
 	su - alarm sh -c "cd /home/alarm/install/udevil-git; makepkg"
 
-mpv: mpv/mpv-1\:0.25.0-3-$(arch).pkg.tar.xz
-	pacman -U --noconfirm --needed "mpv/mpv-1:0.23.0-1-$(arch).pkg.tar.xz"
+mpv: mpv/mpv-1\:0.27.0-1-$(arch).pkg.tar.xz
+	pacman -U --noconfirm --needed "mpv/mpv-1:0.27.0-1-$(arch).pkg.tar.xz"
 
 mpv/mpv-%.pkg.tar.xz:
 	[[ -f /usr/bin/fakeroot ]] || pacman -S --noconfirm --needed base-devel ccache
-	pacman -S --noconfirm --needed ffmpeg lcms2 libcdio-paranoia enca libxss libxkbcommon libcaca desktop-file-utils hicolor-icon-theme xdg-utils lua52 libdvdnav libguess jack smbclient rubberband python-docutils ladspa hardening-wrapper uchardet --asdeps
+	pacman -S --noconfirm --needed ffmpeg lcms2 libcdio-paranoia libgl libxss libxinerama libxv libxkbcommon libva wayland libcaca desktop-file-utils hicolor-icon-theme xdg-utils lua52 libdvdnav libxrandr jack rubberband uchardet libarchive --asdeps
+	pacman -S --noconfirm --needed mesa python-docutils ladspa --asdeps
 	su - alarm sh -c "cd /home/alarm/install/mpv; makepkg"
 
 antimicro: antimicro/antimicro-2.23-1-$(arch).pkg.tar.xz

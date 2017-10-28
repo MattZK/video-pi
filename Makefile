@@ -67,6 +67,7 @@ ifneq (,$(CUSTOM))
 endif
 
 chroot-setup: checkargs
+	systemctl start binfmt-support.service
 ifeq ($(VERSION),3)
 	-[[ -f tmp/root/usr/bin/qemu-aarch64-static ]] || \
 	update-binfmts --importdir /var/lib/binfmts/ --import; \
