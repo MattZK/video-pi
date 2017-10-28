@@ -50,8 +50,8 @@ permissions:
 	ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
 	netctl enable my-network
 
-udevil: udevil-git/udevil-git-20151016.216-1-$(arch).pkg.tar.xz
-	pacman -U --noconfirm --needed "udevil-git/udevil-git-20151016.216-1-$(arch).pkg.tar.xz"
+udevil: udevil-git/udevil-git-20170628.216-1-$(arch).pkg.tar.xz
+	pacman -U --noconfirm --needed "udevil-git/udevil-git-20170628.216-1-$(arch).pkg.tar.xz"
 
 udevil-git/udevil-git-%.pkg.tar.xz:
 	[[ -f /usr/bin/fakeroot ]] || pacman -S --noconfirm --needed base-devel ccache
