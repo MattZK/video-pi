@@ -1,5 +1,5 @@
---- PKGBUILD.orig	2017-11-26 16:03:15.964263522 +0100
-+++ PKGBUILD	2017-11-26 16:03:55.380926156 +0100
+--- PKGBUILD.orig	2017-11-26 18:21:22.271859399 +0100
++++ PKGBUILD	2017-11-26 20:44:56.409089670 +0100
 @@ -3,13 +3,16 @@
  # Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
  # Contributor: Eivind Uggedal <eivind@uggedal.com>
@@ -27,3 +27,14 @@
    ./waf configure --prefix=/usr \
      --confdir=/etc/mpv \
      --enable-cdda \
+@@ -58,7 +63,9 @@
+     --enable-encoding \
+     --enable-libarchive \
+     --enable-libmpv-shared \
+-    --enable-zsh-comp
++    --enable-zsh-comp \
++    --enable-egl-x11 \
++    --enable-rpi
+ 
+   ./waf build
+ }

@@ -63,7 +63,9 @@ build() {
     --enable-encoding \
     --enable-libarchive \
     --enable-libmpv-shared \
-    --enable-zsh-comp
+    --enable-zsh-comp \
+    --enable-egl-x11 \
+    --enable-rpi
 
   ./waf build
 }
