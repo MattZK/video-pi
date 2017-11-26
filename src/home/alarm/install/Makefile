@@ -9,7 +9,7 @@ all: upgrade gui sound player udevil antimicro permissions
 
 upgrade:
 	-mv /etc/sudoers /etc/sudoers.bak
-	pacman -Syu --noconfirm --needed sudo
+	pacman -Syu --noconfirm --needed sudo ntfs-3g
 	mv /etc/sudoers.bak /etc/sudoers
 	chown root.root /etc/sudoers
 
