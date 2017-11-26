@@ -14,4 +14,4 @@ feh --bg-fill /opt/video_pi/video_pi_desktop.png
 
 for f in $HOME/bin/autostart-xorg.d/*; do sh "$f"; done &
 
-dwm
+openbox
