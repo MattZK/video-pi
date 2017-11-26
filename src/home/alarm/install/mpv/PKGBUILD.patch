@@ -1,5 +1,5 @@
---- PKGBUILD.orig	2017-09-14 00:49:45.244271448 +0200
-+++ PKGBUILD	2017-09-14 00:50:30.417039615 +0200
+--- PKGBUILD.orig	2017-11-26 16:03:15.964263522 +0100
++++ PKGBUILD	2017-11-26 16:03:55.380926156 +0100
 @@ -3,13 +3,16 @@
  # Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
  # Contributor: Eivind Uggedal <eivind@uggedal.com>
@@ -10,15 +10,15 @@
  pkgname=mpv
  epoch=1
  pkgver=0.27.0
- pkgrel=1
- _waf_version=1.8.12
+ pkgrel=4
+ _waf_version=1.9.8
  pkgdesc='a free, open source, and cross-platform media player'
--arch=('i686' 'x86_64')
-+arch=('i686' 'x86_64' 'armv6h' 'armv7h' 'aarch64')
+-arch=('x86_64')
++arch=('x86_64' 'armv6h' 'armv7h' 'aarch64')
  license=('GPL')
- url='http://mpv.io'
+ url='https://mpv.io/'
  depends=(
-@@ -40,6 +43,8 @@
+@@ -50,6 +53,8 @@
  build() {
    cd ${pkgname}-${pkgver}
  
