@@ -8,7 +8,7 @@ cd $DIR
 # Install make
 
 if [[ ! -f /usr/bin/make ]]; then
-    pacman -S make --noconfirm
+    pacman -Sy make --noconfirm
 fi
 
 # Run make
