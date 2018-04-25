@@ -3,17 +3,17 @@
 erase: checkargs  ## Overwrite the whole DEVICE with zeros.
 	sudo dd if=/dev/zero of=$(DEVICE) iflag=nocache oflag=direct bs=4M status=progress
 
-build:  ## Build the image
+build:  ## Build the image.
 	sudo systemctl start docker
 	./fix-loopback.sh
 	./build-docker.sh
 
-build-continue:  ## Continue building the image (if previous build failed)
+build-continue:  ## Continue building the image (if previous build failed).
 	./fix-loopback.sh
 	CONTINUE=1 $(MAKE) build
 
-install: checkargs  ## Install built image
-	unzip -p deploy/image_2018-01-02-VideoPi-standard.zip | sudo dd of=$(DEVICE) bs=4 status=progress conv=fsync
+install: checkargs  ## Install built image.
+	unzip -p deploy/image_2018-04-24-VideoPi-standard.zip | sudo dd of=$(DEVICE) bs=4 status=progress conv=fsync
 	sudo sync
 
 checkargs:
