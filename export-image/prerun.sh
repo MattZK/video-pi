@@ -52,10 +52,10 @@ ROOT_LENGTH=$(echo "$PARTED_OUT" | grep -e '^ 2'| xargs echo -n \
 # https://github.com/RPi-Distro/pi-gen/issues/104
 losetup -D
 for i in $(seq 0 5); do
-    dd if=/dev/zero of=virtualfs$i bs=1024 count=30720
-    losetup /dev/loop$i virtualfs$i
-    losetup -d /dev/loop$i
-    rm virtualfs$i
+    dd if=/dev/zero "of=virtualfs$i" bs=1024 count=30720
+    losetup "/dev/loop$i" "virtualfs$i"
+    losetup -d "/dev/loop$i"
+    rm "virtualfs$i"
 done
 
 BOOT_DEV=$(losetup --show -f -o "${BOOT_OFFSET}" --sizelimit "${BOOT_LENGTH}" "${IMG_FILE}")
@@ -69,7 +69,7 @@ for FEATURE in metadata_csum 64bit; do
             ROOT_FEATURES="^$FEATURE,$ROOT_FEATURES"
 	fi
 done
-mkdosfs -n boot -F 32 -v "$BOOT_DEV" > /dev/null
+mkdosfs -n boot -F 32 -I -v "$BOOT_DEV" > /dev/null
 mkfs.ext4 -L rootfs -O "$ROOT_FEATURES" "$ROOT_DEV" > /dev/null
 
 mount -v "$ROOT_DEV" "${ROOTFS_DIR}" -t ext4
