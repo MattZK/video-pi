@@ -3,7 +3,7 @@
 [[ -z $1 ]] && exit 1
 
 find_sorted_excl_nonsense() {
-    find $1/ -type f | sort |
+    find "$1/" -type f | sort |
     grep -vi .DS_Store |
     grep -vi .AppleDouble |
     grep -vi .LSOverride |
@@ -12,7 +12,16 @@ find_sorted_excl_nonsense() {
     grep -vi ehthumbs.db |
     grep -vi Desktop.ini |
     grep -vi "\$RECYCLE.BIN" |
-    grep -v -E "\/\."
+    grep -v -E '/\.'
 }
 
-mpv --loop-playlist=inf --fs --playlist <(find_sorted_excl_nonsense "$1")
+files=$(find_sorted_excl_nonsense "$1")
+
+n_files=$(echo "$files" | wc -l)
+n_images=$(echo "$files" | grep -c -iE '\.(jpe?g|png|gif|tiff?)$')
+
+if [[ $n_files -eq $n_images ]]; then
+    omxiv -t 5 -b "$1"
+else
+    mpv --loop-playlist=inf --fs --playlist <(echo "$files")
+fi
