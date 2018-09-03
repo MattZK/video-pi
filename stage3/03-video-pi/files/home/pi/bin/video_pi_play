@@ -18,7 +18,7 @@ find_sorted_excl_nonsense() {
 files=$(find_sorted_excl_nonsense "$1")
 
 n_files=$(echo "$files" | wc -l)
-n_images=$(echo "$files" | grep -c -iE '\.(jpe?g|png|gif|tiff?)$')
+n_images=$(echo "$files" | grep -c -iE '\.(jpe?g|png)$')
 
 if [[ $n_files -eq $n_images ]]; then
     omxiv -t 5 -b "$1"
