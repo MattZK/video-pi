@@ -1,4 +1,4 @@
-deploy/*
+deploy
 work/*
 postrun.sh
 SKIP
