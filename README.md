@@ -26,11 +26,11 @@ Once the build is finished, Video Pi image will be available in `./deploy/`.
 
 ## Install
 
-To install the image, either use `dd` or check that the path to the image in
+To install the image, either use `dd` or check that the variable `image` in
 [Makefile](./Makefile) is correct and then run:
 
 ```
-make install DEVICE=/dev/sdX
+make install device=/dev/sdX
 ```
 
 ---
