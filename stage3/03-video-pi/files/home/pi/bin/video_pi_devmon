@@ -1,7 +1,7 @@
 #!/bin/sh
 mkdir -p $HOME/.log/
 cmd_start="$HOME/bin/video_pi_play"
-cmd_stop="killall mpv"
+cmd_stop="killall mpv; killall omxiv"
 devmon \
     --exec-on-drive "$cmd_stop; xterm -fullscreen -e $cmd_start \"%d\"" \
     --exec-on-unmount "$cmd_stop" \
