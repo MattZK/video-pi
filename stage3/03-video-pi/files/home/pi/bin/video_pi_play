@@ -16,6 +16,9 @@ find_sorted_excl_nonsense() {
 }
 
 files=$(find_sorted_excl_nonsense "$1")
+if [[ -z "$files" ]]; then
+    exit 0
+fi
 
 n_files=$(echo "$files" | wc -l)
 n_images=$(echo "$files" | grep -c -iE '\.(jpe?g|png)$')
