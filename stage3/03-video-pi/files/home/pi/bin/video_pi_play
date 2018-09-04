@@ -24,7 +24,7 @@ n_files=$(echo "$files" | wc -l)
 n_images=$(echo "$files" | grep -c -iE '\.(jpe?g|png)$')
 
 if [[ $n_files -eq $n_images ]]; then
-    omxiv -t 5 -b "$1"
+    echo "$files" | tr '\n' '\0' | xargs -0 omxiv -t 5 -b
 else
     mpv --loop-playlist=inf --fs --playlist <(echo "$files")
 fi
