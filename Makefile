@@ -1,4 +1,4 @@
-image = deploy/image_2018-09-03-VideoPi-standard.zip
+image = deploy/image_2018-09-04-VideoPi-standard.zip
 
 .PHONY: erase build build-continue install checkargs help
 
