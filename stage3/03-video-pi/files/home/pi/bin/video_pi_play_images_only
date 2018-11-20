@@ -20,4 +20,4 @@ if [[ -z "$files" ]]; then
     exit 0
 fi
 
-echo "$files" | tr '\n' '\0' | xargs -0 omxiv -t 5 -b
+echo "$files" | grep -iE '\.(jpe?g|png)$' | tr '\n' '\0' | xargs -0 omxiv -t 5 -b
