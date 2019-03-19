@@ -5,7 +5,7 @@ endif
 
 all: upgrade gui sound player udevil antimicro permissions locale
 
-.PHONY: upgrade gui sound player network webcam permissions locale udevil mpv antimicro
+.PHONY: upgrade gui sound player network webcam permissions locale udevil mpv mpv-0.25 mpv-0.27 antimicro
 
 upgrade:
 	-mv /etc/sudoers /etc/sudoers.bak
@@ -61,7 +61,17 @@ udevil-git/udevil-git-%.pkg.tar.xz:
 	pacman -S --noconfirm --needed git intltool --asdeps
 	su - alarm sh -c "cd /home/alarm/install/udevil-git; makepkg"
 
-mpv: mpv/mpv-1\:0.27.0-4-$(arch).pkg.tar.xz
+mpv:
+ifeq ($(arch),aarch64)
+	$(MAKE) mpv-25
+else
+	$(MAKE) mpv-27
+endif
+
+mpv-25: mpv/mpv-1\:0.25.0-3-$(arch).pkg.tar.xz
+	pacman -U --noconfirm --needed "mpv/mpv-1:0.25.0-3-$(arch).pkg.tar.xz"
+
+mpv-27: mpv/mpv-1\:0.27.0-4-$(arch).pkg.tar.xz
 	pacman -U --noconfirm --needed "mpv/mpv-1:0.27.0-4-$(arch).pkg.tar.xz"
 
 mpv/mpv-%.pkg.tar.xz:
