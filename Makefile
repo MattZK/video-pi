@@ -19,8 +19,8 @@ backup: checkargs  ## Create an image of the whole DEVICE and store it to backup
 	-mkdir -p backup
 	dd if=$(DEVICE) bs=1024 conv=noerror,sync | pv | gzip -c -9 > "backup/video-pi-backup-`date +%Y%m%d-%H%M%S`.img.gz"
 
-restore: checkargs checkargs-path  ## Install an image PATH of the whole device to DEVICE.
-	-gunzip -c $(PATH) | dd of=$(DEVICE) bs=4M status=progress
+restore: checkargs checkargs-path  ## Install an image FILE of the whole device to DEVICE.
+	-gunzip -c $(FILE) | dd of=$(DEVICE) bs=4M status=progress
 	sync
 
 erase: checkargs  ## Overwrite the whole DEVICE with zeros.
@@ -130,7 +130,7 @@ install: | tmp/root/usr/bin/devmon
 
 unpack: checkargs-version
 	su -c "bsdtar -xpf dist/video-pi-rpi$(VERSION).tar.bz2 -C tmp/root"
-	chown root.root tmp/root/etc/sudoers
+	-chown root.root tmp/root/etc/sudoers
 	sync
 	-rm -r tmp/boot/*
 	mv tmp/root/boot/* tmp/boot
@@ -160,9 +160,9 @@ ifeq (,$(VERSION))
 endif
 
 checkargs-path:
-ifeq (,$(PATH))
-	@echo "You must set the PATH variable."
-	@echo "Example: make restore PATH=/tmp/my_videopi.img"
+ifeq (,$(FILE))
+	@echo "You must set the FILE variable."
+	@echo "Example: make restore FILE=/tmp/my_videopi.img"
 	@exit 1
 endif
 
